@@ -58,7 +58,7 @@ function sys = Mission_Config()
     % Atmospheric re-entry vehicle options.
     % Shape dimensions come from external re-entry vehicle data.
     % L/D values are approximate values from external data.
-    sys.reentry_vehicle.vehicle_mode = "SPACEPLANE"; % SPACEPLANE or CAPSULE
+    sys.reentry_vehicle.vehicle_mode = "CAPSULE"; % SPACEPLANE or CAPSULE
     sys.reentry_vehicle.selected_shape = "COMPROMISE";
     sys.reentry_vehicle.dt = 0.5;                    % [s]
     sys.reentry_vehicle.max_time = 2500;             % [s]
