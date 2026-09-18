@@ -29,6 +29,7 @@ function results = Validate_Mission_Architecture()
         'rbar_hop_count',8,'tof_hop_s',300,'capture_pos_tol_m',0.25, ...
         'max_terminal_refines',4,'tof_terminal_refine_s',180,'Isp_fallback_s',220);
     overrides.phase3.mode = "HOHMANN";
+    overrides.phase2.mode = "LEGACY_IMPULSIVE";
     overrides.phase3.dt_reentry_coast_s = 2;
     overrides.phase3.max_reentry_coast_time_s = [];
     overrides.phase1.phase_angle_deg = [];

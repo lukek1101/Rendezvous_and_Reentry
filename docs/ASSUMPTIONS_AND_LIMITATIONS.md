@@ -26,6 +26,15 @@ This means the code is appropriate for **conceptual mission studies and controll
 
 The phasing stage supports simplified impulsive maneuver logic and an optional finite-burn execution model for the custom phased maneuver.
 
+Phase 2 defaults to a hybrid research model: impulsive handoff/closing followed
+by finite-force R-bar feedback control. It assumes perfect navigation and an
+ideal continuously throttleable 3-axis actuator; spacecraft attitude and RCS
+allocation are not simulated. The 500/250/30 m geometry has an HTV precedent,
+but its controller gains, dwell times, force and geometric limits are project
+assumptions. Candidate-time screening is not global trajectory optimization.
+Monitors stop the simulation on failure; they do not execute a safe abort.
+See `PROXIMITY_DECISION_REPORT_KR.md` for evidence and validation scope.
+
 This is useful for:
 
 - first-order delta-V budgeting

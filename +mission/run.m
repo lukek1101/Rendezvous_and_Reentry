@@ -58,8 +58,11 @@ result.phasing = struct('history', hist_p1, 'delta_v', dV_p1, 'fuel', fuel_p1, .
 [X_chaser, X_target, result.proximity] = mission.proximity(sys, X_chaser, X_target, cfg.phase2);
 result.proximity.chaser = X_chaser;
 result.proximity.target = X_target;
+if ~result.proximity.reached_standoff
+    error('mission:StandoffNotReached','Proximity failed; downstream deorbit is inhibited.');
+end
 m_current = X_chaser(14);
-Budget = [Budget; {"Phase 2: Cycloid + R-bar", result.proximity.delta_v, ...
+Budget = [Budget; {"Phase 2: "+result.proximity.execution_model, result.proximity.delta_v, ...
     result.proximity.fuel, m_current, m_current}];
 
 sys = cfg.system;

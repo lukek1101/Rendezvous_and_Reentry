@@ -1,5 +1,9 @@
 function [X_chaser, X_target, result] = proximity(sys, X_chaser, X_target, p2)
 %PROXIMITY Waypoint-impulse baseline, ending at a standoff (not docking).
+if p2.mode == "HYBRID_AUTONOMOUS"
+    [X_chaser,X_target,result] = mission.autonomous_proximity(sys,X_chaser,X_target,p2);
+    return;
+end
 fprintf('\n[Phase 2] Starting waypoint-impulsive R-bar approach...\n');
 
 % -------------------------------------------------------------------------
@@ -282,6 +286,7 @@ result = struct('history', hist_p2, 'relative_position', hist_pos, ...
     'delta_v', dV_p2, 'fuel', fuel_p2, 'duration', phase2_time, ...
     'final_position_error', norm(r_final-p2.S4), 'final_relative_velocity', v_final);
 result.reached_standoff = result.final_position_error <= p2.capture_pos_tol;
+result.execution_model = "LEGACY_IMPULSIVE";
 end
 
 function [hist_pos, hist_mass, hist_p2] = append_phase2_segment(hist_pos, hist_mass, hist_p2, seg_hist)

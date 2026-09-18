@@ -3,7 +3,7 @@
 MATLAB-based end-to-end rendezvous mission simulator for an unmanned chaser spacecraft operating in Earth orbit. The current codebase combines:
 
 - **Phase 1**: 3-DOF phasing / homing with impulsive maneuvers and J2-aware orbital propagation
-- **Phase 2**: LVLH waypoint-impulse proximity operations with cycloidal drift, R-bar hops, nonlinear J2 propagation, and mass bookkeeping
+- **Phase 2**: hybrid proximity operations: separate impulsive handoff, coast dwell, screened two-impulse closing, and finite-force feedback R-bar approach to 30 m; the cycloid/hop baseline remains selectable
 - **Phase 3**: direct FPA-targeted 3-DOF de-orbit / re-entry descent
 - **Phase 4**: atmospheric entry from a configurable entry interface, with re-entry vehicle shape selection, heat-rate diagnostics, and chaser-to-entry-vehicle line-of-sight checks
 
@@ -19,7 +19,7 @@ This repository currently models:
 - Hohmann-based phase planning with target co-propagation
 - A J2-aware wait-time search before departure so the transfer arrives closer to a desired LVLH capture point
 - Custom phased maneuver logic driven by externally tuned phase angle, delta-V, and gamma parameters, with impulsive execution by default and finite-burn execution kept as an explicit study option
-- LVLH waypoint-impulse proximity operations with cleanup, hold trims, cycloidal drift, R-bar hops, braking impulses, and mass depletion
+- HTV-inspired 500 / 250 / 30 m nadir geometry, sampled approach gates, ideal 3-axis force control, nonlinear J2 propagation, and mass depletion
 - Phase 3 direct re-entry configuration through `Mission_Run_Config.m`
 - Simple thrust uncertainty / noise injection in selected phasing modes
 - Mission-level delta-V and propellant budget tracking
@@ -89,7 +89,23 @@ mission.plot_results(result) % plot a saved result without recomputing it
 `Run_Mission()` defaults to no figures. A supplied seed restores the caller RNG.
 Use a pinned `python_config.mode="FILE"` archive for controlled comparisons;
 AUTO is still scored matching. This API prepares repeated experiments but does
-not invent Monte Carlo distributions or add a proximity feedback controller.
+records run configuration. Phase 2 now includes a research feedback controller;
+it assumes perfect navigation and ideal force direction/throttle, without RCS or
+attitude dynamics. It is explicitly a hybrid model, even with a finite-burn
+Phase 1 selection. Failed proximity gates inhibit downstream deorbit.
+
+```matlab
+% Reproduce the former cycloid/hop baseline:
+settings.phase2.mode = "LEGACY_IMPULSIVE";
+% Default: "HYBRID_AUTONOMOUS". Parameters: phase2.autonomous.
+
+% Pinned comparison, timestep check, 10-run initial-error pilot and plots:
+addpath validation
+study = Study_Proximity_Options(); % output/proximity/
+```
+
+See [the short design report](docs/PROXIMITY_DECISION_REPORT_KR.md) for primary
+sources, alternatives, assumptions, quantitative results and remaining limits.
 
 ```matlab
 addpath validation

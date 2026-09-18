@@ -62,6 +62,11 @@ function run = Mission_Run_Config(defaults)
     run.phase1.min_capture_time_s = 0;
 
     %% Phase 2: proximity operations
+    % HYBRID_AUTONOMOUS: impulsive handoff/closing, finite-force R-bar control.
+    % LEGACY_IMPULSIVE: archived cycloid + stop/start hop comparison baseline.
+    % Independent of phase1 maneuver.burn_model; not full finite-burn rendezvous.
+    run.phase2.mode = "HYBRID_AUTONOMOUS";
+    run.phase2.autonomous = mission.proximity_defaults();
     run.phase2.dt_s = 1.0;
     run.phase2.S2_m = [0; -5000; 0];
     run.phase2.S4_R_abs_m = 30;

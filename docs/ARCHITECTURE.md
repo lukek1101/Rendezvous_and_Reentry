@@ -34,7 +34,11 @@ changes the numerical model.
 | `mission.load_optimizer_config` | Select and read the Python design archive |
 | `mission.run` | Initialize states, sequence phases, accumulate budget |
 | `Phasing_Propagator` | Custom impulse, Hohmann and preliminary multi-leg transfers |
-| `mission.proximity` | Existing cycloid / CW waypoint-impulse standoff approach |
+| `mission.proximity` | Dispatch hybrid approach or legacy cycloid/hop baseline |
+| `mission.autonomous_proximity` | Handoff brake, coast dwell, transfer and gated approach sequence |
+| `mission.plan_closing` | Nonlinear-corrected CW seeds over a finite transfer-time grid |
+| `mission.track_rbar` | Quintic guidance, CW feedforward/PD, force cap and sampled monitors |
+| `mission.proximity_dynamics`, `mission.proximity_step` | Ideal ECI vector force, shared gravity/drag, mass flow and RK4 |
 | `mission.deorbit` | Direct entry injection and interface propagation |
 | `mission.entry_interface` | Entry state/epoch handoff from deorbit history |
 | `mission.entry` | Capsule separation policy, entry propagation, mass accounting |
@@ -96,8 +100,18 @@ target satellite. Plotting uses result histories and does not modify states.
 The current active mission is primarily translational and impulsive. `Env_EOM`
 has rotational states, but the full mission is not a closed-loop attitude/GNC
 simulation. Phase 2 ends at a standoff; physical docking is not modeled.
-Finite-thrust control, signed V-bar corridors and uncertainty distributions
-remain design decisions described in `PROXIMITY_CONTROL_PLAN_KR.md`.
+Phase 2 defaults to HYBRID_AUTONOMOUS: handoff and closing remain impulsive,
+but final approach uses finite-force translation control with perfect navigation.
+The phase1 burn_model does not change this explicitly labeled hybrid contract.
+LEGACY_IMPULSIVE preserves the old comparison baseline. New settings live under
+phase2.autonomous; the previous JSON archives do not select these new fields.
+New proximity results include separate handoff/closing/final_approach budgets,
+a plan with all candidate scores, and control histories (reference, true relative
+state, force and modes). Force column k applies to [time(k),time(k+1)); the last
+force column is an unused zero sentinel. A failed monitor throws; no retreat or
+collision-avoidance trajectory is executed. Failure also inhibits deorbit.
+Signed V-bar corridors, navigation/actuator uncertainty and full finite-burn
+closing remain future extensions. See `PROXIMITY_DECISION_REPORT_KR.md`.
 `CODE_REVIEW_KR.md` records the handoff-speed, environment consistency and entry
 FPA decisions that require a physical-model change rather than a refactor.
 

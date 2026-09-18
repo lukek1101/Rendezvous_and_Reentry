@@ -1,7 +1,9 @@
 # Closing / Final Approach 설계 제안
 
-상태: 제어 설계 초안. Phase 3 중간 parking orbit 제거 및 mission 모듈 분리는 완료했다.
-Phase 2 제어기와 접근 방향 선택은 아직 구현하지 않았다.
+상태: 초기 설계 초안 보관. 2026-09-18에 hybrid R-bar 제어기를 구현했다.
+현재 선택과 수치 검증은 [의사결정 보고서](PROXIMITY_DECISION_REPORT_KR.md)를 따른다.
+아래의 '현재 코드' 설명은 LEGACY_IMPULSIVE 비교 모드에 해당한다.
+±V-bar 접근, 항법/추력 오차 모델, 실제 abort 기동은 아직 구현하지 않았다.
 
 ## 현재 코드에서 확인한 내용
 
