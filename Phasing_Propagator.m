@@ -14,6 +14,9 @@ function [X_final, dV_used, fuel_used, hist, X_target_final] = Phasing_Propagato
     if nargin < 5 || isempty(custom_params)
         custom_params = struct();
     end
+    if nargin < 7 || isempty(pmode)
+        pmode = 1;
+    end
 
     m0 = X0(14);
     X_state = [X0(1:3); X0(4:6); m0];   % [r; v; mass]
@@ -256,7 +259,7 @@ function [X_ch, X_t, hist, capture_time, miss, rel_lvlh, rel_vel_lvlh, reached_t
 
     hist = init_hist();
     elapsed = 0;
-    [rel_lvlh, rel_vel_lvlh] = relative_state_lvlh(X_ch(1:6), X_t);
+    [rel_lvlh, rel_vel_lvlh] = orbit_core.relative_state(X_ch(1:6), X_t);
     d_now = norm(rel_lvlh - desired_rel_lvlh);
 
     best_X = X_ch; best_T = X_t; best_t = 0; best_d = d_now;
@@ -274,7 +277,7 @@ function [X_ch, X_t, hist, capture_time, miss, rel_lvlh, rel_vel_lvlh, reached_t
         dt_eff = min(dt, max_time - elapsed);
         [X_next, T_next] = rk4_step_chaser_target(X_prev, T_prev, sys, dt_eff);
         t_next = t_prev + dt_eff;
-        [rel_next, ~] = relative_state_lvlh(X_next(1:6), T_next);
+        [rel_next, ~] = orbit_core.relative_state(X_next(1:6), T_next);
         d_next = norm(rel_next - desired_rel_lvlh);
 
         hist = log_full_state(hist, X_next, T_next, t_offset + t_next);
@@ -288,7 +291,7 @@ function [X_ch, X_t, hist, capture_time, miss, rel_lvlh, rel_vel_lvlh, reached_t
             X_ch = X_ref; X_t = T_ref; capture_time = t_prev + local_t; miss = d_ref;
             hist = trim_hist_after(hist, t_offset + capture_time);
             hist = log_full_state(hist, X_ch, X_t, t_offset + capture_time);
-            [rel_lvlh, rel_vel_lvlh] = relative_state_lvlh(X_ch(1:6), X_t);
+            [rel_lvlh, rel_vel_lvlh] = orbit_core.relative_state(X_ch(1:6), X_t);
             reached_tol = miss <= pos_tol;
             return;
         end
@@ -309,7 +312,7 @@ function [X_ch, X_t, hist, capture_time, miss, rel_lvlh, rel_vel_lvlh, reached_t
                 X_ch = X_ref; X_t = T_ref; capture_time = t_ref; miss = d_ref;
                 hist = trim_hist_after(hist, t_offset + capture_time);
                 hist = log_full_state(hist, X_ch, X_t, t_offset + capture_time);
-                [rel_lvlh, rel_vel_lvlh] = relative_state_lvlh(X_ch(1:6), X_t);
+                [rel_lvlh, rel_vel_lvlh] = orbit_core.relative_state(X_ch(1:6), X_t);
                 reached_tol = true;
                 return;
             end
@@ -326,7 +329,7 @@ function [X_ch, X_t, hist, capture_time, miss, rel_lvlh, rel_vel_lvlh, reached_t
     X_ch = best_X; X_t = best_T; capture_time = best_t; miss = best_d;
     hist = trim_hist_after(hist, t_offset + capture_time);
     hist = log_full_state(hist, X_ch, X_t, t_offset + capture_time);
-    [rel_lvlh, rel_vel_lvlh] = relative_state_lvlh(X_ch(1:6), X_t);
+    [rel_lvlh, rel_vel_lvlh] = orbit_core.relative_state(X_ch(1:6), X_t);
     reached_tol = miss <= pos_tol;
 end
 
@@ -361,7 +364,7 @@ function d = distance_to_desired_at_time(sys, X0, T0, desired_rel_lvlh, t_eval)
 end
 
 function d = distance_to_desired(X_ch, X_t, desired_rel_lvlh)
-    [rel_lvlh, ~] = relative_state_lvlh(X_ch(1:6), X_t);
+    [rel_lvlh, ~] = orbit_core.relative_state(X_ch(1:6), X_t);
     d = norm(rel_lvlh - desired_rel_lvlh);
 end
 
@@ -434,20 +437,14 @@ function dX = orbit_dynamics_fixed_thrust(X, sys, thrust_N, Isp, burn_dir_eci)
     r = X(1:3);
     v = X(4:6);
     m = X(7);
-    r_norm = norm(r);
 
-    a_g = -sys.mu / r_norm^3 * r;
-    z2 = (r(3)/r_norm)^2;
-    factor = 1.5 * sys.J2 * (sys.mu/r_norm^2) * (sys.Re/r_norm)^2;
-    a_j2 = factor * [ (r(1)/r_norm)*(5*z2 - 1);
-                      (r(2)/r_norm)*(5*z2 - 1);
-                      (r(3)/r_norm)*(5*z2 - 3) ];
+    a_gravity = orbit_core.gravity_j2(r, sys);
     a_drag = Atmospheric_Drag_Acceleration(r, v, m, sys, "chaser");
 
     a_thrust = burn_dir_eci(:) / norm(burn_dir_eci) * (thrust_N / m);
     dm = -thrust_N / (Isp * sys.g0);
 
-    dX = [v; a_g + a_j2 + a_drag + a_thrust; dm];
+    dX = [v; a_gravity + a_drag + a_thrust; dm];
 end
 
 function burn_dir = custom_burn_direction(X_st, gamma, direction_mode)
@@ -783,7 +780,7 @@ function [X_st, X_target_st, dV_tot, sub_hist] = execute_hohmann(sys, X_st, targ
     end
 
     if ~isempty(X_target_st)
-        [rel_lvlh, rel_vel_lvlh] = relative_state_lvlh(X_st(1:6), X_target_st);
+        [rel_lvlh, rel_vel_lvlh] = orbit_core.relative_state(X_st(1:6), X_target_st);
         miss = rel_lvlh - desired_rel_lvlh;
         fprintf('     - capture LVLH position: [%+.1f, %+.1f, %+.1f] m\n', rel_lvlh(1), rel_lvlh(2), rel_lvlh(3));
         fprintf('     - capture error from desired: %.1f m, rel-speed: %.4f m/s\n', norm(miss), norm(rel_vel_lvlh));
@@ -868,7 +865,7 @@ function [X_st, X_target_st, dV_tot, sub_hist] = execute_multi_hohmann(sys, X_st
     end
 
     if ~isempty(X_target_st)
-        [rel_lvlh, rel_vel_lvlh] = relative_state_lvlh(X_st(1:6), X_target_st);
+        [rel_lvlh, rel_vel_lvlh] = orbit_core.relative_state(X_st(1:6), X_target_st);
         miss = rel_lvlh - desired_rel_lvlh;
         fprintf('     - capture LVLH position: [%+.1f, %+.1f, %+.1f] m\n', rel_lvlh(1), rel_lvlh(2), rel_lvlh(3));
         fprintf('     - capture error from desired: %.1f m, rel-speed: %.4f m/s\n', norm(miss), norm(rel_vel_lvlh));
@@ -988,7 +985,7 @@ function [rel_lvlh, rel_vel_lvlh] = predict_hohmann_capture(sys, X_ch_wait, X_t_
     [X_ch, ~] = apply_hohmann_departure_impulse(X_ch, target_r, X_t, sys, false);
     [X_ch, X_t] = propagate_state_only(X_ch, X_t, sys, TOF, dt_transfer);
     [X_ch, ~] = apply_circularization_impulse(X_ch, target_r, X_t, sys, false);
-    [rel_lvlh, rel_vel_lvlh] = relative_state_lvlh(X_ch(1:6), X_t);
+    [rel_lvlh, rel_vel_lvlh] = orbit_core.relative_state(X_ch(1:6), X_t);
 end
 
 function best_wait = find_best_wait_time_multi(sys, X_ch0, X_t0, radii, desired_rel_lvlh, dt_scan, max_wait, refine_span, refine_step, dt_transfer, pmode)
@@ -1044,7 +1041,7 @@ function [rel_lvlh, rel_vel_lvlh] = predict_multi_hohmann_capture(sys, X_ch_wait
         [X_ch, ~] = apply_circularization_impulse(X_ch, target_r, X_t, sys, false);
     end
 
-    [rel_lvlh, rel_vel_lvlh] = relative_state_lvlh(X_ch(1:6), X_t);
+    [rel_lvlh, rel_vel_lvlh] = orbit_core.relative_state(X_ch(1:6), X_t);
 end
 
 %% --- Helper: Impulses ---
@@ -1367,27 +1364,18 @@ end
 function dX = orbit_dynamics_target(X, sys)
     r = X(1:3);
     v = X(4:6);
-    r_norm = norm(r);
     target_mass = get_sys_field(sys, 'Target_Mass', 2000.0);
 
-    a_g = -sys.mu / r_norm^3 * r;
-    z2 = (r(3)/r_norm)^2;
-    factor = 1.5 * sys.J2 * (sys.mu/r_norm^2) * (sys.Re/r_norm)^2;
-    a_j2 = factor * [ (r(1)/r_norm)*(5*z2 - 1);
-                      (r(2)/r_norm)*(5*z2 - 1);
-                      (r(3)/r_norm)*(5*z2 - 3) ];
+    a_gravity = orbit_core.gravity_j2(r, sys);
     a_drag = Atmospheric_Drag_Acceleration(r, v, target_mass, sys, "target");
 
-    dX = [v; a_g + a_j2 + a_drag];
+    dX = [v; a_gravity + a_drag];
 end
 
 function dX = orbit_dynamics(X, sys, thrust_mag, dir)
     r = X(1:3); v = X(4:6); m = X(7);
-    r_norm = norm(r); v_norm = norm(v);
-    a_g = -sys.mu / r_norm^3 * r;
-    z2 = (r(3)/r_norm)^2;
-    factor = 1.5 * sys.J2 * (sys.mu/r_norm^2) * (sys.Re/r_norm)^2;
-    a_j2 = factor * [ (r(1)/r_norm)*(5*z2 - 1); (r(2)/r_norm)*(5*z2 - 1); (r(3)/r_norm)*(5*z2 - 3) ];
+    v_norm = norm(v);
+    a_gravity = orbit_core.gravity_j2(r, sys);
     a_drag = Atmospheric_Drag_Acceleration(r, v, m, sys, "chaser");
     a_thrust = [0;0;0]; dm = 0;
     if thrust_mag > 0
@@ -1395,31 +1383,10 @@ function dX = orbit_dynamics(X, sys, thrust_mag, dir)
         a_thrust = (v / v_norm) * dir * (actual_thrust / m);
         dm = -actual_thrust / (sys.Isp * sys.g0);
     end
-    dX = [v; a_g + a_j2 + a_drag + a_thrust; dm];
+    dX = [v; a_gravity + a_drag + a_thrust; dm];
 end
 
 %% --- Helper: LVLH relative state ---
-function [rel_lvlh, rel_vel_lvlh] = relative_state_lvlh(X_chaser6, X_target6)
-    r_t = X_target6(1:3);
-    v_t = X_target6(4:6);
-    r_c = X_chaser6(1:3);
-    v_c = X_chaser6(4:6);
-
-    h_vec = cross(r_t, v_t);
-    i_u = r_t / norm(r_t);
-    k_u = h_vec / norm(h_vec);
-    j_u = cross(k_u, i_u);
-    C_I2L = [i_u'; j_u'; k_u'];
-
-    rho_eci = r_c - r_t;
-    rel_lvlh = C_I2L * rho_eci;
-
-    omega_lvlh_eci = h_vec / norm(r_t)^2;
-    rho_dot_eci = v_c - v_t - cross(omega_lvlh_eci, rho_eci);
-    rel_vel_lvlh = C_I2L * rho_dot_eci;
-end
-
-%% --- Helper: History logging ---
 function hist = init_hist()
     hist.pos = [];
     hist.vel = [];
@@ -1446,7 +1413,7 @@ function hist = log_full_state(hist, X_chaser, X_target, t)
         hist.target_pos = [hist.target_pos, X_target(1:3)];
         hist.target_vel = [hist.target_vel, X_target(4:6)];
         hist.rel_pos = [hist.rel_pos, X_chaser(1:3) - X_target(1:3)];
-        [rel_lvlh, rel_vel_lvlh] = relative_state_lvlh(X_chaser(1:6), X_target);
+        [rel_lvlh, rel_vel_lvlh] = orbit_core.relative_state(X_chaser(1:6), X_target);
         hist.rel_pos_lvlh = [hist.rel_pos_lvlh, rel_lvlh];
         hist.rel_vel_lvlh = [hist.rel_vel_lvlh, rel_vel_lvlh];
     end

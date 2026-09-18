@@ -4,7 +4,7 @@ MATLAB-based end-to-end rendezvous mission simulator for an unmanned chaser spac
 
 - **Phase 1**: 3-DOF phasing / homing with impulsive maneuvers and J2-aware orbital propagation
 - **Phase 2**: LVLH waypoint-impulse proximity operations with cycloidal drift, R-bar hops, nonlinear J2 propagation, and mass bookkeeping
-- **Phase 3**: selectable 3-DOF de-orbit / re-entry modes, including direct FPA-targeted descent and a configurable parking-orbit / R-bar-aligned re-entry setup
+- **Phase 3**: direct FPA-targeted 3-DOF de-orbit / re-entry descent
 - **Phase 4**: atmospheric entry from a configurable entry interface, with re-entry vehicle shape selection, heat-rate diagnostics, and chaser-to-entry-vehicle line-of-sight checks
 
 The project is designed as a mission-level simulation framework rather than a single guidance-law demo. It is useful for studying how orbit transfer logic, target-relative geometry, J2 perturbation, mass depletion, proximity-operation sequencing, and entry diagnostics interact in one connected workflow.
@@ -20,7 +20,7 @@ This repository currently models:
 - A J2-aware wait-time search before departure so the transfer arrives closer to a desired LVLH capture point
 - Custom phased maneuver logic driven by externally tuned phase angle, delta-V, and gamma parameters, with impulsive execution by default and finite-burn execution kept as an explicit study option
 - LVLH waypoint-impulse proximity operations with cleanup, hold trims, cycloidal drift, R-bar hops, braking impulses, and mass depletion
-- selectable Phase 3 re-entry logic through `Mission_Run_Config.m`
+- Phase 3 direct re-entry configuration through `Mission_Run_Config.m`
 - Simple thrust uncertainty / noise injection in selected phasing modes
 - Mission-level delta-V and propellant budget tracking
 - Visualization of trajectory, altitude history, proximity trajectory, mass depletion, atmospheric-entry heat flux, dynamic pressure, g-load, and line-of-sight margin
@@ -29,7 +29,10 @@ This repository currently models:
 
 ```text
 .
-|-- Main_Mission_Simulator.m      % Main entry point for the full mission
+|-- Main_Mission_Simulator.m      % Interactive wrapper and compatibility variables
+|-- Run_Mission.m                 % Reusable headless / seeded mission API
+|-- +mission/                    % Configuration, phase orchestration, reporting and plotting
+|-- +orbit_core/                 % Shared J2 gravity and LVLH relative-state geometry
 |-- Mission_Config.m              % Physical constants, vehicle data, mission parameters
 |-- Mission_Run_Config.m          % User-facing run control panel
 |-- Phasing_Propagator.m          % 3-DOF phasing, Hohmann, custom impulse logic, preliminary Multi-Hohmann branch
@@ -45,6 +48,7 @@ This repository currently models:
 |-- J2PolarHohmann.py             % Python J2 polar Hohmann propagation study
 |-- J2PolarHohmannShooting.py     % Python shooting / constrained optimization helper
 |-- DragDeorbitDesigner.py        % Python drag-aware Phase 3 deorbit design helper
+|-- mission_io.py                % Shared archive serialization and index storage
 |-- docs/
 |   |-- ARCHITECTURE.md
 |   |-- ASSUMPTIONS_AND_LIMITATIONS.md
@@ -65,7 +69,39 @@ This repository currently models:
 `-- .gitignore
 ```
 
-The active MATLAB `.m` files are intentionally kept at the repository root so that the existing MATLAB execution flow does not break.
+Public entry points remain at the repository root; implementation packages
+use MATLAB namespaces. Add the root to your path, keeping `legacy` off it.
+
+## Programmatic runs and verification
+
+```matlab
+settings.runtime.allow_environment_overrides = false;
+settings.reentry.vehicle_mode = "CAPSULE";
+result = Run_Mission(settings, struct('plot', false, 'verbose', false, 'seed', 42));
+disp(result.budget)
+mission.plot_results(result) % plot a saved result without recomputing it
+
+% Optional per-experiment physical/scenario overrides:
+% options.system.h_insert = 300e3;
+% options.system.h_target = 500e3;
+```
+
+`Run_Mission()` defaults to no figures. A supplied seed restores the caller RNG.
+Use a pinned `python_config.mode="FILE"` archive for controlled comparisons;
+AUTO is still scored matching. This API prepares repeated experiments but does
+not invent Monte Carlo distributions or add a proximity feedback controller.
+
+```matlab
+addpath validation
+Run_All_Validations
+```
+
+```shell
+python -m unittest discover -s validation -p 'test_*.py'
+```
+
+See [architecture](docs/ARCHITECTURE.md) and the
+[Korean code review and model decisions](docs/CODE_REVIEW_KR.md).
 
 ## How to Run
 
@@ -73,7 +109,7 @@ The active MATLAB `.m` files are intentionally kept at the repository root so th
 2. Make sure the current folder is the repository root.
 3. Edit `Mission_Config.m` to change the orbital scenario (insertion/target
    altitudes and initial geometry). Edit `Mission_Run_Config.m` for burn model,
-   re-entry mode, parking altitude, entry vehicle, or solver tolerances.
+   re-entry settings, entry vehicle, or solver tolerances.
 4. Run:
 
 ```matlab
@@ -89,7 +125,7 @@ for normal run settings:
 - maneuver model: `IMPULSIVE` or `FINITE_BURN`
 - Phase 1 phasing parameters and capture tolerances
 - Phase 2 proximity-operation waypoints and timing
-- Phase 3 mode, parking altitude, entry-interface altitude, and FPA
+- Phase 3 direct descent, entry-interface altitude, and FPA
 - Phase 4 re-entry vehicle shape and atmosphere-entry settings
 - optional orbital atmospheric drag
 
@@ -98,8 +134,7 @@ Common examples:
 ```matlab
 % In Mission_Run_Config.m
 run.maneuver.burn_model = "IMPULSIVE";
-run.phase3.mode = "R_BAR_200_FPA";
-run.phase3.parking_altitude_km = 200;
+run.phase3.mode = "HOHMANN";
 run.phase3.flight_path_angle_deg = 4;
 run.reentry.shape = "TPS_MIN";
 run.environment.atmospheric_drag.enabled = true;
@@ -279,20 +314,11 @@ Main_Mission_Simulator
 
 The active MATLAB path is intended to use standard MATLAB numerical functionality. The Python helper scripts require the packages listed in `requirements.txt`.
 
-For `R_BAR_200_FPA`, the final parking-orbit to entry-interface injection fuel
-update is controlled independently. The default is `false`; to include that burn
-in the propellant and remaining-mass budget:
-
-```matlab
-run.phase3.charge_final_reentry_fuel = true; % research default
-Main_Mission_Simulator
-```
-
 Legacy environment-variable overrides are still supported for batch scripts:
 `RENDEZVOUS_CONFIG_JSON`, `RENDEZVOUS_CONFIG_CASE_ID`,
 `RENDEZVOUS_CONFIG_HASH`, `RENDEZVOUS_BURN_MODEL`,
 `RENDEZVOUS_ATMOSPHERIC_DRAG`, `RENDEZVOUS_REENTRY_SHAPE`,
-`RENDEZVOUS_PHASE3_MODE`, and `RENDEZVOUS_CHARGE_FINAL_REENTRY_FUEL`. Set
+and `RENDEZVOUS_PHASE3_MODE`. Set
 `run.runtime.allow_environment_overrides = false` to make `Mission_Run_Config.m`
 the only run-control source.
 
@@ -321,7 +347,7 @@ In `HOHMANN` mode, the logic is:
 
 ### Phase 2: Proximity Operations
 
-The current root-level mission script performs proximity operations directly in `Main_Mission_Simulator.m`.
+`mission.proximity` implements proximity operations independently of the interactive script.
 
 The active Phase 2 implementation includes:
 
@@ -336,16 +362,19 @@ The active Phase 2 implementation includes:
 
 Older force-based `GNC_Controller.m` implementations are preserved under `legacy/`, but they are not called by the current root-level mission script.
 
+The proposed closed-loop control and signed R-bar/V-bar extension are described
+in [the proximity-control design draft](docs/PROXIMITY_CONTROL_PLAN_KR.md).
+These are planned features; the current Phase 2 remains waypoint-impulsive
+and ends at a standoff point rather than physical docking.
+
 ### Phase 3: Re-entry / Descent
 
-Phase 3 is selected with `run.phase3.mode` in `Mission_Run_Config.m`.
-
-Current modes:
-
-- `HOHMANN`: performs a direct FPA-targeted de-orbit injection and stops at `run.phase3.entry_interface_altitude_km`. It no longer performs a nonphysical circularization after crossing the interface.
-- `R_BAR_200_FPA`: first lowers from the station orbit region to `run.phase3.parking_altitude_km`, waits until the vehicle is below the target on the target R-bar, then performs a final injection to `run.phase3.entry_interface_altitude_km` using the configured FPA geometry. The final injection delta-V and propellant are included by default; disabling `run.phase3.charge_final_reentry_fuel` is an explicitly nonphysical mass-ledger sensitivity option.
-
-Both modes still use the same post-run check of the actual flight-path angle near the configured entry-interface altitude.
+Phase 3 uses `run.phase3.mode = "HOHMANN"` for direct FPA-targeted de-orbit
+injection to `run.phase3.entry_interface_altitude_km`. All deorbit propellant
+is included in the mass budget. The intermediate parking orbit and target
+R-bar alignment stage have been removed. Older mode values are unsupported.
+The actual flight-path angle is checked at the entry interface; there is no
+circularization at that interface.
 
 If orbital atmospheric drag is enabled for Phase 3, `HOHMANN` switches to the
 drag-aware single-retrograde-burn design loaded from
@@ -376,12 +405,10 @@ The pre-Phase-3 chaser state is propagated separately as an orbiting relay. The 
 
 ### `Main_Mission_Simulator.m`
 
-Orchestrates the complete mission:
-
-- initializes spacecraft states
-- runs Phase 1 / 2 / 3 in sequence
-- collects delta-V and propellant budgets
-- generates mission plots
+Calls `Run_Mission` with plotting enabled and exposes the main budget, history,
+and state variables for interactive analysis. It preserves caller variables and
+existing figures. `Run_Mission` and `+mission` own configuration, four-phase
+execution, results, reporting, and plotting.
 
 ### `Mission_Config.m`
 

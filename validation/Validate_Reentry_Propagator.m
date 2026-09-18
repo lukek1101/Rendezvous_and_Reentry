@@ -8,6 +8,8 @@ function results = Validate_Reentry_Propagator()
     addpath(project_root);
 
     sys = Mission_Config();
+    % Pin the test vehicle independently of the user's mission selection.
+    sys.reentry_vehicle.vehicle_mode = "SPACEPLANE";
     X0 = synthetic_entry_state_local(sys);
 
     base = struct();

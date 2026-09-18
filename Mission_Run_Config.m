@@ -1,4 +1,4 @@
-function run = Mission_Run_Config()
+function run = Mission_Run_Config(defaults)
     % Mission_Run_Config
     % Single user-facing control panel for normal mission runs.
     %
@@ -9,7 +9,9 @@ function run = Mission_Run_Config()
     % Mission_Config.m is the sole authority for the orbital scenario
     % (insertion/target altitudes and initial geometry). This file controls
     % run methods, solver settings, and re-entry options.
-    defaults = Mission_Config();
+    if nargin < 1
+        defaults = Mission_Config();
+    end
 
     %% Runtime / external config selection
     % python_config.mode:
@@ -77,21 +79,12 @@ function run = Mission_Run_Config()
     run.phase2.Isp_fallback_s = 220;
 
     %% Phase 3: de-orbit / re-entry setup
-    % "HOHMANN" or "R_BAR_200_FPA".
-    run.phase3.mode = "R_BAR_200_FPA";
-    run.phase3.parking_altitude_km = defaults.h_reentry / 1e3;
+    % Direct descent to the entry interface; deorbit fuel is always charged.
+    run.phase3.mode = "HOHMANN";
     run.phase3.entry_interface_altitude_km = defaults.h_entry_interface / 1e3;
     run.phase3.flight_path_angle_deg = rad2deg(defaults.reentry_flight_path_angle);
-    % Research default: every modeled injection is charged to the mass
-    % ledger. Set false only for an explicitly nonphysical sensitivity case.
-    run.phase3.charge_final_reentry_fuel = true;
-    run.phase3.target_radius_tol_m = 100;
     run.phase3.dt_reentry_coast_s = 2;
     run.phase3.max_reentry_coast_time_s = [];
-    run.phase3.dt_rbar_wait_s = 30;
-    run.phase3.max_rbar_wait_s = [];
-    run.phase3.rbar_vbar_tol_m = 10;
-    run.phase3.rbar_radial_tol_m = 50e3;
     % Drag-aware HOHMANN deorbit design:
     %   "AUTO"/"FILE": when orbital drag is enabled, load a Python-generated
     %                  single-retrograde-burn deorbit design from file.

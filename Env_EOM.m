@@ -1,7 +1,6 @@
 function dX = Env_EOM(~, X, F_cmd_body, T_cmd_body, sys, is_6DOF, vehicle_role)
     % X state: [r(3); v(3); q(4); w(3); mass(1)]
     r = X(1:3); v = X(4:6); mass = X(14);
-    r_norm = norm(r);
 
     if nargin < 7 || isempty(vehicle_role)
         if is_6DOF
@@ -12,12 +11,7 @@ function dX = Env_EOM(~, X, F_cmd_body, T_cmd_body, sys, is_6DOF, vehicle_role)
     end
 
     % 1. Gravity & J2 Perturbation
-    a_g = -sys.mu / r_norm^3 * r;
-    z2 = (r(3)/r_norm)^2;
-    factor = 1.5 * sys.J2 * (sys.mu/r_norm^2) * (sys.Re/r_norm)^2;
-    a_j2 = factor * [ (r(1)/r_norm)*(5*z2 - 1);
-                      (r(2)/r_norm)*(5*z2 - 1);
-                      (r(3)/r_norm)*(5*z2 - 3) ];
+    a_gravity = orbit_core.gravity_j2(r, sys);
     a_drag = Atmospheric_Drag_Acceleration(r, v, mass, sys, vehicle_role);
 
     % 2. Dynamics Mode Selection
@@ -46,7 +40,7 @@ function dX = Env_EOM(~, X, F_cmd_body, T_cmd_body, sys, is_6DOF, vehicle_role)
         a_thrust = zeros(3,1); dm = 0;
     end
 
-    dX = [v; a_g + a_j2 + a_drag + a_thrust; dq; dw; dm];
+    dX = [v; a_gravity + a_drag + a_thrust; dq; dw; dm];
 end
 
 function R = quat2rotm_custom(q)

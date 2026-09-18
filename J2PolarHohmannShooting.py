@@ -1,6 +1,6 @@
+from mission_io import (to_jsonable, canonical_json_text, short_hash, safe_slug,
+                        relative_posix_path, write_json_atomic, update_case_index)
 import argparse
-import hashlib
-import json
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -159,26 +159,6 @@ def resolve_environment_config(environment_config=None):
     return config
 
 
-def to_jsonable(value):
-    if isinstance(value, np.ndarray):
-        return value.tolist()
-    if isinstance(value, (np.floating, np.integer)):
-        return value.item()
-    if isinstance(value, dict):
-        return {str(k): to_jsonable(v) for k, v in value.items()}
-    if isinstance(value, (list, tuple)):
-        return [to_jsonable(v) for v in value]
-    return value
-
-
-def canonical_json_text(value):
-    return json.dumps(to_jsonable(value), sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
-
-def short_hash(value, length=12):
-    return hashlib.sha256(canonical_json_text(value).encode("utf-8")).hexdigest()[:length]
-
-
 def config_settings_signature(config):
     return {
         "schema_version": config.get("schema_version"),
@@ -198,22 +178,6 @@ def config_result_signature(config):
         "phase1_solution": config.get("phase1", {}),
         "optimizer": config.get("optimizer", {}),
     }
-
-
-def safe_slug(value):
-    text = str(value).strip().lower()
-    chars = []
-    for ch in text:
-        if ch.isalnum():
-            chars.append(ch)
-        elif ch in {"_", "-", "."}:
-            chars.append(ch)
-        else:
-            chars.append("-")
-    slug = "".join(chars).strip("-")
-    while "--" in slug:
-        slug = slug.replace("--", "-")
-    return slug or "case"
 
 
 def archive_labels(config):
@@ -250,13 +214,6 @@ def attach_archive_metadata(config, created_at=None):
         "settings_signature": config_settings_signature(config)
     }
     return config
-
-
-def relative_posix_path(path, base_dir):
-    try:
-        return path.resolve().relative_to(base_dir.resolve()).as_posix()
-    except ValueError:
-        return path.resolve().as_posix()
 
 
 def build_index_entry(config, archive_path, config_dir, latest_path=None):
@@ -298,32 +255,9 @@ def build_index_entry(config, archive_path, config_dir, latest_path=None):
 
 
 def update_solution_index(index_path, config, archive_path, latest_path=None):
-    config_dir = index_path.parent
-    if index_path.exists():
-        try:
-            index = json.loads(index_path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError:
-            index = {}
-    else:
-        index = {}
-
-    cases = index.get("cases", [])
-    if not isinstance(cases, list):
-        cases = []
-
-    entry = build_index_entry(config, archive_path, config_dir, latest_path=latest_path)
-    cases = [case for case in cases if case.get("case_id") != entry["case_id"]]
-    cases.append(entry)
-    cases.sort(key=lambda case: str(case.get("created_at", "")))
-
-    index = {
-        "schema_version": 1,
-        "source": "J2PolarHohmannShooting.py",
-        "updated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "latest_case_id": entry["case_id"],
-        "cases": cases
-    }
-    index_path.write_text(json.dumps(index, indent=2, sort_keys=True), encoding="utf-8")
+    index_path = Path(index_path)
+    entry = build_index_entry(config, archive_path, index_path.parent, latest_path=latest_path)
+    update_case_index(index_path, entry, "J2PolarHohmannShooting.py")
 
 
 def matlab_burn_model_name(burn_model):
@@ -402,10 +336,7 @@ def archive_matlab_mission_config(config, latest_path=None, archive_dir=None, in
 
     config = attach_archive_metadata(config, created_at=created_at)
     archive_path = archive_dir / f"{config['archive']['case_id']}.json"
-    archive_path.write_text(
-        json.dumps(to_jsonable(config), indent=2, sort_keys=True),
-        encoding="utf-8"
-    )
+    write_json_atomic(archive_path, config)
     update_solution_index(index_path, config, archive_path, latest_path=latest_path)
     return config, archive_path, index_path
 
@@ -415,10 +346,7 @@ def save_matlab_mission_config(output, path="configs/latest_python_solution.json
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     config, archive_path, index_path = archive_matlab_mission_config(config, latest_path=path)
-    path.write_text(
-        json.dumps(to_jsonable(config), indent=2, sort_keys=True),
-        encoding="utf-8"
-    )
+    write_json_atomic(path, config)
     print(f"Archived MATLAB mission config: {archive_path}")
     print(f"Updated MATLAB config index: {index_path}")
     return path
@@ -1303,50 +1231,6 @@ def plot_constrained_delta_v_history(history, log_distance=True):
     fig.suptitle("Constrained J2 Polar Hohmann Optimization History", fontsize=14)
     plt.tight_layout()
     plt.show()
-'''
-def plot_constrained_delta_v_history(history, log_distance=True):
-    steps = history["step"]
-
-    plt.figure(figsize=(8, 5))
-    plt.plot(steps, history["distance_km"], marker="o")
-    plt.xlabel("Step")
-    plt.ylabel("Distance error [km]")
-    plt.title("Constrained Optimization: Distance Error History")
-    plt.grid(True)
-
-    if log_distance:
-        plt.yscale("log")
-
-    plt.tight_layout()
-    plt.show()
-
-    plt.figure(figsize=(8, 5))
-    plt.plot(steps, history["delta_v_m_s"], marker="o")
-    plt.xlabel("Step")
-    plt.ylabel("Delta-V 1 [m/s]")
-    plt.title("Constrained Optimization: Delta-V History")
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
-
-    plt.figure(figsize=(8, 5))
-    plt.plot(steps, history["gamma_deg"], marker="o")
-    plt.xlabel("Step")
-    plt.ylabel("Gamma [deg]")
-    plt.title("Constrained Optimization: Gamma History")
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
-
-    plt.figure(figsize=(8, 5))
-    plt.plot(steps, history["relative_speed_m_s"], marker="o")
-    plt.xlabel("Step")
-    plt.ylabel("Relative speed at closest approach [m/s]")
-    plt.title("Terminal Relative Speed History")
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
-'''
 
 
 # ============================================================

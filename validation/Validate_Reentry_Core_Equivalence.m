@@ -10,6 +10,8 @@ function results = Validate_Reentry_Core_Equivalence()
     addpath(project_root);
 
     sys = Mission_Config();
+    % Frozen SPACEPLANE references must not inherit a CAPSULE run default.
+    sys.reentry_vehicle.vehicle_mode = "SPACEPLANE";
     % Force the repository-owned atmosphere implementation so equivalence
     % does not depend on Aerospace Toolbox availability or release details.
     sys.environment.atmospheric_drag.use_matlab_atmosisa = false;

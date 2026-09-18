@@ -19,7 +19,6 @@ function sys = Mission_Config()
     sys.h_insert = 300e3;      % 300 km
     sys.initial_chaser_angle_deg = 0;
     sys.initial_phase_angle_deg = 90;
-    sys.h_reentry = 200e3;     % 200 km
     sys.h_entry_interface = 120e3; % 120 km atmospheric entry interface
     sys.reentry_flight_path_angle = 4 * pi/180; % 120 km interface FPA magnitude [rad]
     sys.inc = pi/2;            % Polar orbit inclination [rad]

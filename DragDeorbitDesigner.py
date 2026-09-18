@@ -1,6 +1,6 @@
+from mission_io import (to_jsonable, canonical_json_text, short_hash, safe_slug,
+                        relative_posix_path, write_json_atomic, update_case_index)
 import argparse
-import hashlib
-import json
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -18,40 +18,6 @@ from J2PolarHohmann import (
 
 
 G0_M_S2 = 9.80665
-
-
-def to_jsonable(value):
-    if isinstance(value, np.ndarray):
-        return value.tolist()
-    if isinstance(value, (np.floating, np.integer)):
-        return value.item()
-    if isinstance(value, dict):
-        return {str(k): to_jsonable(v) for k, v in value.items()}
-    if isinstance(value, (list, tuple)):
-        return [to_jsonable(v) for v in value]
-    return value
-
-
-def canonical_json_text(value):
-    return json.dumps(to_jsonable(value), sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
-
-def short_hash(value, length=12):
-    return hashlib.sha256(canonical_json_text(value).encode("utf-8")).hexdigest()[:length]
-
-
-def safe_slug(value):
-    text = str(value).strip().lower()
-    chars = []
-    for ch in text:
-        if ch.isalnum() or ch in {"_", "-", "."}:
-            chars.append(ch)
-        else:
-            chars.append("-")
-    slug = "".join(chars).strip("-")
-    while "--" in slug:
-        slug = slug.replace("--", "-")
-    return slug or "case"
 
 
 def build_environment_config(args):
@@ -459,13 +425,6 @@ def solve_drag_deorbit(args):
     return environment_config, method, best_result, rule_result, len(cache)
 
 
-def relative_posix_path(path, base_dir):
-    try:
-        return path.resolve().relative_to(base_dir.resolve()).as_posix()
-    except ValueError:
-        return path.resolve().as_posix()
-
-
 def attach_archive_metadata(config):
     created_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     settings = {
@@ -505,18 +464,6 @@ def attach_archive_metadata(config):
 
 def update_index(index_path, config, archive_path, latest_path):
     config_dir = index_path.parent
-    if index_path.exists():
-        try:
-            index = json.loads(index_path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError:
-            index = {}
-    else:
-        index = {}
-
-    cases = index.get("cases", [])
-    if not isinstance(cases, list):
-        cases = []
-
     archive = config["archive"]
     drag = config["phase3"]["drag_deorbit"]
     entry = {
@@ -540,17 +487,7 @@ def update_index(index_path, config, archive_path, latest_path):
         },
     }
 
-    cases = [case for case in cases if case.get("case_id") != entry["case_id"]]
-    cases.append(entry)
-    cases.sort(key=lambda case: str(case.get("created_at", "")))
-    index = {
-        "schema_version": 1,
-        "source": "DragDeorbitDesigner.py",
-        "updated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "latest_case_id": entry["case_id"],
-        "cases": cases,
-    }
-    index_path.write_text(json.dumps(index, indent=2, sort_keys=True), encoding="utf-8")
+    update_case_index(index_path, entry, "DragDeorbitDesigner.py")
 
 
 def write_outputs(config, output_path):
@@ -561,10 +498,10 @@ def write_outputs(config, output_path):
 
     config = attach_archive_metadata(to_jsonable(config))
     archive_path = archive_dir / f"{config['archive']['case_id']}.json"
-    archive_path.write_text(json.dumps(config, indent=2, sort_keys=True), encoding="utf-8")
+    write_json_atomic(archive_path, config)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(config, indent=2, sort_keys=True), encoding="utf-8")
     update_index(config_dir / "drag_deorbit_solution_index.json", config, archive_path, output_path)
+    write_json_atomic(output_path, config)
     return output_path, archive_path
 
 

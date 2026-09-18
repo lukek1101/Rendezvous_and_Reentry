@@ -9,7 +9,7 @@
 - Phase 1 phasing mode: `CUSTOM_IMPULSE`, `HOHMANN` (`MULTI_HOHMANN`은 예비 기능)
 - Burn model: `IMPULSIVE`, `FINITE_BURN`
 - Orbital atmospheric drag: `OFF`, `ISA76`
-- Phase 3 re-entry setup: `HOHMANN`, `R_BAR_200_FPA`
+- Phase 3 re-entry setup: `HOHMANN` (direct descent)
 - Phase 4 re-entry vehicle shape: `COMPROMISE`, `HEATLOAD_MIN`, `PAYLOAD_MAX`, `TPS_MIN`
 
 기본 실행은 `IMPULSIVE`이며, impulsive delta-V를 실제 thrust로 분산하는 `FINITE_BURN`은 명시적인 sensitivity study 옵션으로만 남긴다.
@@ -29,7 +29,7 @@
    Target-centered `LVLH frame`에서 S2, S3, S4 waypoint를 따라 접근한다. 기본 구조는 S2 hold trim, cycloidal drift, R-bar hop, braking impulse로 구성된다.
 
 3. **Phase 3: De-orbit / Entry Interface Setup**
-   Vehicle을 configurable atmospheric entry interface로 보낸다. `HOHMANN`은 direct FPA-targeted descent를 수행하고, `R_BAR_200_FPA`는 configurable parking orbit과 R-bar alignment를 거친 뒤 entry interface로 진입한다.
+   Vehicle을 configurable atmospheric entry interface로 보낸다. `HOHMANN`은 중간 parking orbit 없이 direct FPA-targeted descent를 수행한다.
 
 4. **Phase 4: Atmospheric Entry**
    Entry interface부터 re-entry vehicle을 별도 객체로 전파한다. 동시에 chaser는 orbiting relay로 계속 propagation되며, re-entry vehicle과 chaser 사이의 geometric line of sight가 유지되는지 확인한다.
@@ -216,16 +216,6 @@ FPA = atan2(v_radial, v_horizontal)
 
 현재 임시 정책으로는 `Mission_Run_Config.m`의 `run.environment.atmospheric_drag.apply_from_phase = "PHASE3"`를 사용한다. 따라서 Phase 1/2 rendezvous와 berthing 구간은 기존처럼 drag-free J2 propagation을 쓰고, berthing 이후 Phase 3부터 orbital drag를 켠다. Phase 1부터 drag를 켜려면 drag-on 조건으로 다시 생성한 Phase 1 Python optimizer JSON이 필요하다.
 
-### 7.2 R_BAR_200_FPA mode
-
-`R_BAR_200_FPA` mode는 세 단계로 구성된다.
-
-1. configured parking orbit으로 lowering
-2. target 기준 R-bar 아래쪽 alignment까지 coast
-3. configured entry-interface altitude / target FPA injection
-
-이 mode는 re-entry 직전 geometry를 target-relative 관점에서 더 명확히 만들기 위한 option이다.
-
 ## 8. Atmospheric drag
 
 Drag acceleration은 다음 식을 사용한다.
@@ -376,7 +366,7 @@ MATLAB에서 repository root를 current folder로 설정한 뒤 실행한다.
 Main_Mission_Simulator
 ```
 
-기본값은 `Mission_Config.m`과 `Main_Mission_Simulator.m` 내부 default를 사용한다. 단, Phase 1의 hard-coded `CUSTOM_IMPULSE` 값은 연구 중간값이므로, 정밀한 run은 Python optimizer로 JSON을 만든 뒤 MATLAB에서 불러오는 workflow를 권장한다.
+기본값은 `Mission_Config.m`과 `+mission/configure.m` 내부 default를 사용한다. 단, Phase 1의 hard-coded `CUSTOM_IMPULSE` 값은 연구 중간값이므로, 정밀한 run은 Python optimizer로 JSON을 만든 뒤 MATLAB에서 불러오는 workflow를 권장한다.
 
 ## 2. Python optimizer 실행
 
@@ -485,21 +475,7 @@ setenv('RENDEZVOUS_PHASE3_MODE','HOHMANN')
 Main_Mission_Simulator
 ```
 
-200 km parking orbit과 R-bar alignment를 포함하는 mode:
-
-```matlab
-setenv('RENDEZVOUS_PHASE3_MODE','R_BAR_200_FPA')
-Main_Mission_Simulator
-```
-
-`R_BAR_200_FPA`에서 final parking-orbit -> entry-interface injection의 propellant를 budget에 포함하려면:
-
-```matlab
-setenv('RENDEZVOUS_CHARGE_FINAL_REENTRY_FUEL','on')
-Main_Mission_Simulator
-```
-
-기본값은 fuel을 제외하되 delta-V는 보고한다.
+Deorbit injection의 delta-V와 연료는 모두 budget에 반영한다.
 
 ## 6. Atmospheric drag 선택
 
@@ -617,7 +593,7 @@ MATLAB run이 끝나면 다음이 출력된다.
 
 ### `Main_Mission_Simulator.m`
 
-전체 mission script이다. Phase 1부터 Phase 4까지 순서대로 실행하고, budget table과 plot을 만든다.
+`Run_Mission`을 호출하는 interactive wrapper이다. `+mission`이 설정, Phase 1~4 실행, 결과 보고와 plot을 분리한다. 반복 실험은 `Run_Mission(overrides, options)`를 사용한다. 자세한 interface는 `ARCHITECTURE.md`, 구조 검토와 미결 모델 결정은 `CODE_REVIEW_KR.md`를 참조한다.
 
 ### `Mission_Config.m`
 
