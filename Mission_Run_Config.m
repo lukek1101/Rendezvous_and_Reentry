@@ -78,7 +78,7 @@ function run = Mission_Run_Config()
 
     %% Phase 3: de-orbit / re-entry setup
     % "HOHMANN" or "R_BAR_200_FPA".
-    run.phase3.mode = "HOHMANN";
+    run.phase3.mode = "R_BAR_200_FPA";
     run.phase3.parking_altitude_km = defaults.h_reentry / 1e3;
     run.phase3.entry_interface_altitude_km = defaults.h_entry_interface / 1e3;
     run.phase3.flight_path_angle_deg = rad2deg(defaults.reentry_flight_path_angle);

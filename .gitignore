@@ -54,3 +54,9 @@ Desktop.ini
 # results/figures/
 # results/tables/
 # results/mat/
+
+
+# =========================
+# Random Backups
+# =========================
+GPT_conversation_backups/
