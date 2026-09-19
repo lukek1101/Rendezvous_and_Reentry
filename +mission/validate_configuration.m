@@ -52,6 +52,8 @@ function validate_configuration(cfg)
         error('mission:InvalidBurnSign', 'phase2.vbar_burn_sign must be -1 or +1.');
     end
     positive(cfg.phase3.dt_reentry_coast_s, 'phase3.dt_reentry_coast_s');
+    validateattributes(cfg.phase3.apogee_burns.enabled,{'logical'},{'scalar'});
+    mission.validate_apogee_burns(cfg.phase3.apogee_burns);
     if ~isempty(cfg.phase3.max_reentry_coast_time_s)
         positive(cfg.phase3.max_reentry_coast_time_s, 'phase3.max_reentry_coast_time_s');
     end

@@ -11,6 +11,14 @@ The project is designed as a mission-level simulation framework rather than a si
 
 ## Current Scope
 
+Optional apogee-split finite deorbit and a separate footprint/target/window
+calculator are now available. Run `Run_Footprint_Study` for a two-vehicle example.
+Enable `phase3.apogee_burns.enabled` for scheduled finite burns. See the
+[entry footprint report and API](docs/ENTRY_FOOTPRINT_REPORT_KR.md).
+The default footprint endpoint is 20 km altitude, not touchdown; the sample
+envelope has unbounded thermal/load limits. `entry_design.dispersion` is a
+separate fixed-policy uncertainty experiment, not an IMU/GNSS filter model.
+
 This repository currently models:
 
 - Earth central gravity + J2 perturbation

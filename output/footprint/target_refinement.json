@@ -1,0 +1,12 @@
+{
+  "status": "REACHABLE_WITNESS",
+  "miss_distance_m": 24.733143711971447,
+  "tolerance_m": 100,
+  "bank_profile_deg": [
+    -42.324126030017993,
+    -46.71789380146334,
+    -47.836462744709948
+  ],
+  "refinement_evaluations": 20,
+  "passed": true
+}

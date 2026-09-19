@@ -40,6 +40,8 @@ changes the numerical model.
 | `mission.track_rbar` | Quintic guidance, CW feedforward/PD, force cap and sampled monitors |
 | `mission.proximity_dynamics`, `mission.proximity_step` | Ideal ECI vector force, shared gravity/drag, mass flow and RK4 |
 | `mission.deorbit` | Direct entry injection and interface propagation |
+| `mission.apogee_deorbit` | Optional finite retrograde burn schedule, apogee/cooldown events |
+| `entry_design` | Standalone sampled footprint, bank targeting, ignition opportunities, dispersion |
 | `mission.entry_interface` | Entry state/epoch handoff from deorbit history |
 | `mission.entry` | Capsule separation policy, entry propagation, mass accounting |
 | `Reentry_Propagator` | Vehicle resolution, atmospheric-entry events/history/diagnostics |

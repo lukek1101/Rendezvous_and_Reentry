@@ -86,6 +86,8 @@ function run = Mission_Run_Config(defaults)
     %% Phase 3: de-orbit / re-entry setup
     % Direct descent to the entry interface; deorbit fuel is always charged.
     run.phase3.mode = "HOHMANN";
+    % Explicit finite-burn schedule; independent of drag-design JSON/Phase 1.
+    run.phase3.apogee_burns = mission.apogee_burn_defaults();
     run.phase3.entry_interface_altitude_km = defaults.h_entry_interface / 1e3;
     run.phase3.flight_path_angle_deg = rad2deg(defaults.reentry_flight_path_angle);
     run.phase3.dt_reentry_coast_s = 2;

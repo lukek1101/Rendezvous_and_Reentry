@@ -73,6 +73,7 @@ p2.autonomous = run_cfg.phase2.autonomous;
 p3 = default_phase3_config();
 p3 = apply_json_to_phase3(p3, mission_cfg);
 p3 = apply_run_config_to_phase3(p3, run_cfg);
+p3.apogee_burns = run_cfg.phase3.apogee_burns;
 p3 = apply_phase3_env_overrides(p3, run_cfg);
 if p3.mode ~= "HOHMANN"
     error('mission:UnsupportedDeorbitMode', 'Phase 3 supports only HOHMANN direct descent.');
@@ -311,6 +312,7 @@ function phase3_cfg = apply_phase3_env_overrides(phase3_cfg, run_cfg)
 end
 
 function custom_params = apply_phase3_config_to_params(custom_params, phase3_cfg)
+    custom_params.apogee_burns = phase3_cfg.apogee_burns;
     custom_params.dt_reentry_coast = phase3_cfg.dt_reentry_coast_s;
     custom_params.drag_deorbit_design_mode = phase3_cfg.drag_deorbit_design_mode;
     custom_params.drag_deorbit_design_file = phase3_cfg.drag_deorbit_design_file;

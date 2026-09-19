@@ -1,0 +1,343 @@
+{
+  "apogee": {
+    "mode": "APOGEE_SPLIT_FINITE",
+    "burns": [
+      {
+        "start_s": 0,
+        "duration_s": 198.47819460862286,
+        "delta_v_m_s": 30.000000000001794,
+        "start_radial_speed_m_s": 0,
+        "start_altitude_m": 500000
+      },
+      {
+        "start_s": 5687.9200820718543,
+        "duration_s": 195.46542314218641,
+        "delta_v_m_s": 30.000000000001368,
+        "start_radial_speed_m_s": -1.3865614565680235E-13,
+        "start_altitude_m": 499843.86329874489
+      },
+      {
+        "start_s": 11271.566825863,
+        "duration_s": 568.7734996089348,
+        "delta_v_m_s": 90.0000000000051,
+        "start_radial_speed_m_s": -1.6639403564739205E-11,
+        "start_altitude_m": 499568.53334395774
+      }
+    ],
+    "status": "ENTRY_AFTER_BURNS",
+    "commanded_delta_v_m_s": 150,
+    "delivered_delta_v_m_s": 150.00000000000836,
+    "entry_fpa_deg": -1.9327450838675564,
+    "entry_altitude_m": 120000,
+    "duration_s": 13219.405777715334,
+    "entry_injection_dV": 150.00000000000836,
+    "entry_injection_fuel": 147.25473796247365,
+    "reentry_coast_time": 1379.0654522433997
+  },
+  "burn_limit_checked": true,
+  "duration_capped_burns": [
+    {
+      "start_s": 0,
+      "duration_s": 300,
+      "delta_v_m_s": 45.524265891850035,
+      "start_radial_speed_m_s": 0,
+      "start_altitude_m": 500000
+    },
+    {
+      "start_s": 5704.62888138974,
+      "duration_s": 16.116038562101494,
+      "delta_v_m_s": 2.4757341081503088,
+      "start_radial_speed_m_s": -2.7732591012623479E-13,
+      "start_altitude_m": 499506.10209710337
+    },
+    {
+      "start_s": 11269.18157908007,
+      "duration_s": 300,
+      "delta_v_m_s": 46.665658192132355,
+      "start_radial_speed_m_s": 0,
+      "start_altitude_m": 499510.03990874067
+    },
+    {
+      "start_s": 16805.416891019577,
+      "duration_s": 159.9023446326355,
+      "delta_v_m_s": 25.334341807868768,
+      "start_radial_speed_m_s": 0,
+      "start_altitude_m": 498498.92209508456
+    }
+  ],
+  "endpoint_convergence_m": 0.047305059241563488,
+  "zero_lift_bank_difference_m": 0,
+  "dispersion": {
+    "config": {
+      "trials": 2,
+      "seed": 981,
+      "initial_covariance": [
+        [
+          100,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          100,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          100,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0.0001,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0.0001,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0.0001
+        ]
+      ],
+      "density_coefficient_of_variation": 0.02,
+      "cd_coefficient_of_variation": 0,
+      "ld_coefficient_of_variation": 0
+    },
+    "entry_config": {
+      "terminal_altitude_m": 20000,
+      "max_time_s": 5000,
+      "max_step_s": 5,
+      "relative_tolerance": 1E-8,
+      "earth_angle_at_epoch_deg": 0,
+      "entry_epoch_s": 13219.405777715334,
+      "earth_rotation_rad_s": 7.2921159E-5,
+      "bank_limit_deg": 60,
+      "bank_rate_deg_s": 10,
+      "initial_bank_deg": 0,
+      "bank_response_s": 2,
+      "speed_fractions": [
+        1,
+        0.75,
+        0.4
+      ],
+      "bank_profiles_deg": [
+        [
+          -60,
+          -60,
+          -60
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          60,
+          60,
+          60
+        ]
+      ],
+      "max_dynamic_pressure_Pa": null,
+      "max_g_load": null,
+      "max_heat_flux_W_m2": null,
+      "max_heat_load_J_m2": null,
+      "target_tolerance_m": 10000,
+      "target_max_iterations": 35,
+      "target_max_evaluations": 80
+    },
+    "latlon_deg": [
+      [
+        24.273653748177267,
+        124.61905984269302
+      ],
+      [
+        24.28519882184013,
+        124.61977004204938
+      ]
+    ],
+    "feasible": [
+      true,
+      true
+    ],
+    "initial_perturbations": [
+      [
+        -12.579140379867544,
+        -0.13833479105109614
+      ],
+      [
+        -2.804677179404178,
+        3.11664724943952
+      ],
+      [
+        5.6327519746257835,
+        -1.3793140561895854
+      ],
+      [
+        0.0008970805393199114,
+        0.0084145083007893268
+      ],
+      [
+        -0.0033000972589383583,
+        -0.0040955208179303407
+      ],
+      [
+        0.013714481188374492,
+        0.013972322105810314
+      ]
+    ],
+    "parameter_scales": [
+      [
+        1.0139990410710542,
+        1,
+        1
+      ],
+      [
+        1.0167734292765438,
+        1,
+        1
+      ]
+    ],
+    "interpretation": "FIXED_POLICY_DISPERSION_NOT_REACHABLE_FOOTPRINT_OR_NAVIGATION_FILTER"
+  },
+  "window": {
+    "samples": [
+      {
+        "delay_s": 0,
+        "entry_epoch_s": 13219.405777715334,
+        "status": "REACHABLE_WITNESS",
+        "miss_distance_m": 7.916971468295051E-10,
+        "ignition_times_s": [
+          0,
+          5687.9200820718543,
+          11271.566825863
+        ],
+        "deorbit_delta_v_m_s": 150.00000000000836,
+        "entry_vehicle_mass_kg": 60,
+        "bank_profile_deg": [
+          -60,
+          -60,
+          -60
+        ],
+        "reason": ""
+      },
+      {
+        "delay_s": 120,
+        "entry_epoch_s": 13325.771445500348,
+        "status": "UNRESOLVED_BY_SEARCH",
+        "miss_distance_m": 758147.75613476371,
+        "ignition_times_s": [
+          120,
+          5790.381125368981,
+          11374.225325840436
+        ],
+        "deorbit_delta_v_m_s": 150.00000000000793,
+        "entry_vehicle_mass_kg": 60,
+        "bank_profile_deg": [
+          -60,
+          -60,
+          -60
+        ],
+        "reason": ""
+      },
+      {
+        "delay_s": 240,
+        "entry_epoch_s": 13433.172573264954,
+        "status": "UNRESOLVED_BY_SEARCH",
+        "miss_distance_m": 1.5224776739696907E+6,
+        "ignition_times_s": [
+          240,
+          5893.8893914575692,
+          11478.067795899144
+        ],
+        "deorbit_delta_v_m_s": 150.00000000000793,
+        "entry_vehicle_mass_kg": 60,
+        "bank_profile_deg": [
+          -60,
+          -60,
+          -60
+        ],
+        "reason": ""
+      }
+    ],
+    "target_latlon_deg": [
+      24.247245805063816,
+      124.61710487984782
+    ],
+    "entry_config": {
+      "terminal_altitude_m": 20000,
+      "max_time_s": 5000,
+      "max_step_s": 5,
+      "relative_tolerance": 1E-8,
+      "earth_angle_at_epoch_deg": 0,
+      "entry_epoch_s": 0,
+      "earth_rotation_rad_s": 7.2921159E-5,
+      "bank_limit_deg": 60,
+      "bank_rate_deg_s": 10,
+      "initial_bank_deg": 0,
+      "bank_response_s": 2,
+      "speed_fractions": [
+        1,
+        0.75,
+        0.4
+      ],
+      "bank_profiles_deg": [
+        -60,
+        -60,
+        -60
+      ],
+      "max_dynamic_pressure_Pa": null,
+      "max_g_load": null,
+      "max_heat_flux_W_m2": null,
+      "max_heat_load_J_m2": null,
+      "target_tolerance_m": 10000,
+      "target_max_iterations": 35,
+      "target_max_evaluations": 80
+    },
+    "deorbit_config": {
+      "apogee_burns": {
+        "enabled": true,
+        "total_delta_v_m_s": 150,
+        "fractions": [
+          0.2,
+          0.2,
+          0.6
+        ],
+        "thrust_N": 300,
+        "isp_s": 200,
+        "max_burn_duration_s": 900,
+        "cooldown_s": 600,
+        "minimum_mass_kg": 1000,
+        "max_burns": 20,
+        "max_elapsed_s": 172800,
+        "first_burn": "CURRENT",
+        "max_step_s": 10
+      }
+    },
+    "interpretation": "SAMPLED_IGNITION_OPPORTUNITIES_NOT_CONTINUOUS_WINDOWS",
+    "verified_delays_s": 0
+  },
+  "mass_policy_checked": true,
+  "passed": true
+}

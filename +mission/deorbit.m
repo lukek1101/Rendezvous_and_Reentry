@@ -1,4 +1,9 @@
 function [X_chaser, X_target, dV_used, fuel_used, hist, info] = deorbit(sys, X_chaser, X_target, custom_params)
+    if isfield(custom_params,'apogee_burns') && custom_params.apogee_burns.enabled
+        [X_chaser,X_target,dV_used,fuel_used,hist,info] = ...
+            mission.apogee_deorbit(sys,X_chaser,X_target,custom_params.apogee_burns);
+        return;
+    end
     dV_used = 0;
     fuel_used = 0;
     hist = init_phase3_hist();

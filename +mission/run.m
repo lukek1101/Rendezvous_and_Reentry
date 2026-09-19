@@ -66,12 +66,14 @@ Budget = [Budget; {"Phase 2: "+result.proximity.execution_model, result.proximit
     result.proximity.fuel, m_current, m_current}];
 
 sys = cfg.system;
-fprintf('\n[Phase 3] Direct de-orbit to %.1f km interface...\n', sys.h_entry_interface/1e3);
+fprintf('\n[Phase 3] De-orbit to %.1f km interface...\n', sys.h_entry_interface/1e3);
 X_orbiting_entry_relay0 = [X_target(1:6); 0;0;0;1; 0;0;0; sys.Target_Mass];
 [X_chaser, X_target, dV_p3, fuel_p3, hist_p3, reentry_info] = ...
     mission.deorbit(sys, X_chaser, X_target, cfg.deorbit);
 m_current = X_chaser(14);
-Budget = [Budget; {"Phase 3: "+cfg.phase3.mode, dV_p3, fuel_p3, m_current, m_current}];
+deorbit_label=cfg.phase3.mode;
+if isfield(reentry_info,'mode'), deorbit_label=reentry_info.mode; end
+Budget = [Budget; {"Phase 3: "+deorbit_label, dV_p3, fuel_p3, m_current, m_current}];
 [X_entry_interface, entry_interface_info] = mission.entry_interface( ...
     hist_p3, X_chaser, sys, sys.h_entry_interface);
 result.deorbit = struct('history', hist_p3, 'delta_v', dV_p3, 'fuel', fuel_p3, ...
