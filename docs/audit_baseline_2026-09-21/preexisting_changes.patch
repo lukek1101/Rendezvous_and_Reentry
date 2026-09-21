@@ -1,0 +1,212 @@
+diff --git a/+entry_design/window.m b/+entry_design/window.m
+index c733052..47728cd 100644
+--- a/+entry_design/window.m
++++ b/+entry_design/window.m
+@@ -1,7 +1,9 @@
+-function result = window(sys,Xc,Xt,vehicle,delays_s,target_latlon_deg,entry_overrides,deorbit_params,refine)
++function result = window(sys,Xc,Xt,vehicle,delays_s,target_latlon_deg,entry_overrides,deorbit_params,refine,verbose)
+ %WINDOW Propagate actual wait + deorbit + entry at each candidate ignition delay.
+ % Grid samples only: no interpolation across holes, no continuous window claim.
+     if nargin<9, refine=false; end
++    if nargin<10, verbose=false; end
++    Xc=Xc(:); Xt=Xt(:);
+     validateattributes(delays_s,{'numeric'},{'vector','nonempty','real','finite','nonnegative'});
+     if any(diff(delays_s)<=0), error('entry_design:Delays','Ignition delays must strictly increase.'); end
+     c=mission.merge_settings(entry_design.defaults(),entry_overrides);
+@@ -15,19 +17,25 @@ function result = window(sys,Xc,Xt,vehicle,delays_s,target_latlon_deg,entry_over
+         'ignition_times_s',{},'deorbit_delta_v_m_s',{},'entry_vehicle_mass_kg',{},'bank_profile_deg',{},'reason',{});
+     witnesses=cell(numel(delays_s),1);
+     initial=[Xc(1:6);Xt(1:6);Xc(14)];
++    y=initial; previous_delay=0;
+     for k=1:numel(delays_s)
+-        delay=delays_s(k); y=initial;
+-        if delay>0
++        delay=delays_s(k);
++        if delay>previous_delay
+             [~,states]=ode45(@(t,s) mission.proximity_dynamics(t,s,zeros(3,1),sys), ...
+-                [0 delay],initial,odeset('RelTol',1e-10,'AbsTol',1e-8,'MaxStep',30));
++                [previous_delay delay],y,odeset('RelTol',1e-10,'AbsTol',1e-8,'MaxStep',30));
+             y=states(end,:)';
+         end
++        previous_delay=delay;
+         chaser=Xc; chaser(1:6)=y(1:6); chaser(14)=y(13); target=y(7:12);
+         row=struct('delay_s',delay,'entry_epoch_s',NaN,'status',"DEORBIT_FAILED", ...
+             'miss_distance_m',inf,'ignition_times_s',[],'deorbit_delta_v_m_s',NaN, ...
+             'entry_vehicle_mass_kg',NaN,'bank_profile_deg',[],'reason',"");
+         try
+-            [chaser,~,dv,~,history,info]=mission.deorbit(sys,chaser,target,deorbit_params);
++            if verbose
++                evalc('[chaser,~,dv,~,history,info]=mission.deorbit(sys,chaser,target,deorbit_params);');
++            else
++                [chaser,~,dv,~,history,info]=mission.deorbit(sys,chaser,target,deorbit_params);
++            end
+             [entry,interface]=mission.entry_interface(history,chaser,sys,sys.h_entry_interface);
+             row.entry_epoch_s=c.entry_epoch_s+delay+interface.time_s;
+             row.deorbit_delta_v_m_s=dv;
+@@ -53,6 +61,10 @@ function result = window(sys,Xc,Xt,vehicle,delays_s,target_latlon_deg,entry_over
+             row.reason=string(exception.message);
+         end
+         rows(k)=row;
++        if verbose
++            fprintf('  [%d/%d] delay %.1f min: %s, miss %.3f km\n', ...
++                k,numel(delays_s),delay/60,row.status,row.miss_distance_m/1000);
++        end
+     end
+     result=struct('samples',rows,'witnesses',{witnesses},'target_latlon_deg',target_latlon_deg, ...
+         'entry_config',c,'deorbit_config',deorbit_params, ...
+diff --git a/+mission/deorbit.m b/+mission/deorbit.m
+index 4745e46..edb54a6 100644
+--- a/+mission/deorbit.m
++++ b/+mission/deorbit.m
+@@ -451,7 +451,7 @@ function [X_chaser, X_target, hist, elapsed] = propagate_until_altitude(X_chaser
+         hist = log_phase3_state(hist, X_chaser, X_target, t0 + elapsed);
+     end
+ 
+-    error('Re-entry coast did not reach %.1f km altitude within %.2f min.', target_alt/1000, max_time/60);
++    error('mission:NoEntry','Re-entry coast did not reach %.1f km altitude within %.2f min.', target_alt/1000, max_time/60);
+ end
+ 
+ function [X_cross, T_cross, t_cross] = refine_altitude_crossing(X0, T0, target_alt, dt_window, sys, t_abs0)
+diff --git a/+mission/run.m b/+mission/run.m
+index 48d5f3d..7e8eb88 100644
+--- a/+mission/run.m
++++ b/+mission/run.m
+@@ -1,5 +1,6 @@
+-function result = run(cfg)
++function result = run(cfg,stop_after_proximity)
+ %RUN Execute the four mission phases using an already resolved configuration.
++if nargin<2, stop_after_proximity=false; end
+ sys = cfg.proximity_system;
+ custom_params = cfg.phase1;
+ phasing_mode = cfg.phase1_mode;
+@@ -64,6 +65,10 @@ end
+ m_current = X_chaser(14);
+ Budget = [Budget; {"Phase 2: "+result.proximity.execution_model, result.proximity.delta_v, ...
+     result.proximity.fuel, m_current, m_current}];
++if stop_after_proximity
++    result.budget=Budget;
++    return;
++end
+ 
+ sys = cfg.system;
+ fprintf('\n[Phase 3] De-orbit to %.1f km interface...\n', sys.h_entry_interface/1e3);
+diff --git a/.gitignore b/.gitignore
+index da8fbff..8e1e842 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -54,6 +54,8 @@ Desktop.ini
+ # results/figures/
+ # results/tables/
+ # results/mat/
++/output/deorbit_window*/window_results.mat
++/output/deorbit_window_validation/
+ 
+ 
+ # =========================
+diff --git a/README.md b/README.md
+index b61c59f..efbe9a8 100644
+--- a/README.md
++++ b/README.md
+@@ -13,6 +13,12 @@ The project is designed as a mission-level simulation framework rather than a si
+ 
+ Optional apogee-split finite deorbit and a separate footprint/target/window
+ calculator are now available. Run `Run_Footprint_Study` for a two-vehicle example.
++Run `w = Run_Deorbit_Window_Study()` to search deorbit start candidates for
++36.5 N, 130.5 E from the configured mission's Phase 2 terminal state. To reuse
++an existing run, call `w = Run_Deorbit_Window_Study(mission_result)`.
++Verified samples are in `w.candidates`; all trials, trajectories, CSV tables,
++and a plot are saved under `output/deorbit_window`. See the
++[target window usage and assumptions](docs/DEORBIT_WINDOW_GUIDE_KR.md).
+ Enable `phase3.apogee_burns.enabled` for scheduled finite burns. See the
+ [entry footprint report and API](docs/ENTRY_FOOTPRINT_REPORT_KR.md).
+ The default footprint endpoint is 20 km altitude, not touchdown; the sample
+diff --git a/Run_Mission.m b/Run_Mission.m
+index 4368dd9..1b7ffff 100644
+--- a/Run_Mission.m
++++ b/Run_Mission.m
+@@ -2,6 +2,7 @@ function result = Run_Mission(overrides, options)
+ %RUN_MISSION Run a mission without clearing the caller or requiring figures.
+ % result = Run_Mission() uses Mission_Config and Mission_Run_Config defaults.
+ % overrides is a partial Mission_Run_Config struct (unknown fields error).
++% options.stop_after_proximity (false) returns the pre-deorbit state for studies.
+ % options.plot (false), verbose (true), seed ([]), system (partial physical
+ % configuration) control the runner. A supplied seed restores the caller RNG.
+ % For isolated studies set overrides.runtime.allow_environment_overrides=false.
+@@ -12,11 +13,15 @@ function result = Run_Mission(overrides, options)
+     if nargin < 2
+         options = struct();
+     end
+-    defaults = struct('plot', false, 'verbose', true, 'seed', [], ...
++    defaults = struct('plot', false, 'verbose', true, 'seed', [], 'stop_after_proximity',false, ...
+         'system', Mission_Config());
+     options = mission.merge_settings(defaults, options, 'options');
+     validateattributes(options.plot, {'logical'}, {'scalar'}, mfilename, 'options.plot');
+     validateattributes(options.verbose, {'logical'}, {'scalar'}, mfilename, 'options.verbose');
++    validateattributes(options.stop_after_proximity, {'logical'}, {'scalar'}, mfilename, 'options.stop_after_proximity');
++    if options.plot && options.stop_after_proximity
++        error('mission:PartialPlot','Full-mission plotting requires stop_after_proximity=false.');
++    end
+     if ~isempty(options.seed)
+         validateattributes(options.seed, {'numeric'}, ...
+             {'scalar','integer','nonnegative','finite','<=',2^32-1}, mfilename, 'options.seed');
+@@ -28,10 +33,10 @@ function result = Run_Mission(overrides, options)
+     timer = tic;
+     if options.verbose
+         cfg = mission.configure(options.system, overrides);
+-        result = mission.run(cfg);
++        result = mission.run(cfg,options.stop_after_proximity);
+         result.log = '';
+     else
+-        result.log = evalc('cfg = mission.configure(options.system, overrides); result = mission.run(cfg);');
++        result.log = evalc('cfg = mission.configure(options.system, overrides); result = mission.run(cfg,options.stop_after_proximity);');
+     end
+     result.metadata.schema_version = 1;
+     result.metadata.elapsed_seconds = toc(timer);
+diff --git a/output/footprint/footprint_results.json b/output/footprint/footprint_results.json
+index de1ab44..98c69b8 100644
+--- a/output/footprint/footprint_results.json
++++ b/output/footprint/footprint_results.json
+@@ -249,7 +249,9 @@
+     "max_g_load": null,
+     "max_heat_flux_W_m2": null,
+     "max_heat_load_J_m2": null,
+-    "target_tolerance_m": 10000
++    "target_tolerance_m": 10000,
++    "target_max_iterations": 35,
++    "target_max_evaluations": 80
+   },
+   "initial_state_eci": [
+     6.498137E+6,
+diff --git a/output/footprint/footprints.png b/output/footprint/footprints.png
+index 9eb52acc28610e5d278f541bd76e12a4548001a1..d43407adfbbf9ed765a1b116db2deb4d6dbe0076 100644
+GIT binary patch
+delta 49
+zcmV-10M7rj)C05B1CT)o6$1)3CeM`8kx51vGBGVvWpFJrFfukEFf}?cFgi6f?Xj(~
+Hv8Rmbr$Z7H
+
+delta 49
+zcmV-10M7rj)C05B1CT)o5)d&CvB>7+kx51vF*q$#WpFJrFfukEF*rIjIXW>k;G!7@
+Hv8Rmb!afna
+
+diff --git a/output/footprint/validation_results.json b/output/footprint/validation_results.json
+index d7e482f..39a6978 100644
+--- a/output/footprint/validation_results.json
++++ b/output/footprint/validation_results.json
+@@ -263,13 +263,13 @@
+       },
+       {
+         "delay_s": 240,
+-        "entry_epoch_s": 13433.172573264954,
++        "entry_epoch_s": 13433.172573260328,
+         "status": "UNRESOLVED_BY_SEARCH",
+-        "miss_distance_m": 1.5224776739696907E+6,
++        "miss_distance_m": 1.5224776980425047E+6,
+         "ignition_times_s": [
+           240,
+-          5893.8893914575692,
+-          11478.067795899144
++          5893.8893914571245,
++          11478.067795897889
+         ],
+         "deorbit_delta_v_m_s": 150.00000000000793,
+         "entry_vehicle_mass_kg": 60,

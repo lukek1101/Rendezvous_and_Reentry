@@ -263,13 +263,13 @@
       },
       {
         "delay_s": 240,
-        "entry_epoch_s": 13433.172573264954,
+        "entry_epoch_s": 13433.172573260328,
         "status": "UNRESOLVED_BY_SEARCH",
-        "miss_distance_m": 1.5224776739696907E+6,
+        "miss_distance_m": 1.5224776980425047E+6,
         "ignition_times_s": [
           240,
-          5893.8893914575692,
-          11478.067795899144
+          5893.8893914571245,
+          11478.067795897889
         ],
         "deorbit_delta_v_m_s": 150.00000000000793,
         "entry_vehicle_mass_kg": 60,

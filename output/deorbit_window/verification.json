@@ -1,0 +1,12 @@
+{
+  "sample_count": 159,
+  "verified_count": 0,
+  "best_delay_s": 9215.0967001727531,
+  "best_miss_m": 248197.20318811122,
+  "best_bank_profile_deg": [
+    8.99967296789354,
+    26.389919888140561,
+    36.332729391193823
+  ],
+  "endpoint_change_m": 0.1762752530272387
+}

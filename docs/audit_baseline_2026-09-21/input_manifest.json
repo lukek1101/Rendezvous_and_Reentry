@@ -1,0 +1,710 @@
+[
+  {
+    "path": "validation\\Validate_Reentry_Propagator.m",
+    "sha256": "99A22F257AE7874DB07DF00A59F8CBA24A2359FAE06BE8AB33B456FBF1212E43"
+  },
+  {
+    "path": "validation\\Validate_Reentry_Core_Equivalence.m",
+    "sha256": "7DA42947FA1A2D650A9533E9C32FDE4F15EDE9FDD3A792A31A6918D9DFEB4520"
+  },
+  {
+    "path": "validation\\Validate_Paper_Reproduction.m",
+    "sha256": "DF9F0C31DE630BA72053B0F7FE60E14975DFB6C7D4A72EB192D720359757A1A0"
+  },
+  {
+    "path": "validation\\Validate_Orbit_Core.m",
+    "sha256": "A538A2B148B7D83345D4FE595FD65A94CDFED8B4E8726F34DFA50B56F2FD555B"
+  },
+  {
+    "path": "validation\\Validate_Mission_Architecture.m",
+    "sha256": "94707F2663E63300596D6648BB70A476B0A30298C6F53E2B740D0B9C8E0E909F"
+  },
+  {
+    "path": "validation\\Validate_Footprint_Target.m",
+    "sha256": "DE5EAE418118E4F1D965090B0A9D17E59415024179F4448D9006875C4A265343"
+  },
+  {
+    "path": "validation\\Validate_Entry_Design.m",
+    "sha256": "B417EB39DED87CBDA034111243A73439D5408D31D3DF1A83C7D5A64A4948DC4E"
+  },
+  {
+    "path": "validation\\Validate_Deorbit_Window_Study.m",
+    "sha256": "037B310F40DBB29FE1F98C29D461F9E84C46D5E664A0584F6E23B5E71D43CF05"
+  },
+  {
+    "path": "validation\\Validate_Deorbit_Execution.m",
+    "sha256": "197D55C166C3E8ACB584B00789E6A66846A2A86FB9DD1C514DA94F7A6BEDD71F"
+  },
+  {
+    "path": "validation\\test_python_tools.py",
+    "sha256": "AB61E0897A0EF465ECF24720CBFAE08311DF783A5590FAA1A8A57B2846391667"
+  },
+  {
+    "path": "validation\\Study_Proximity_Options.m",
+    "sha256": "913B1AF49DC007EC481797B2560EC0C8E6DBBE420E3DB1B253A453B421071A93"
+  },
+  {
+    "path": "validation\\Run_All_Validations.m",
+    "sha256": "507BBD020E23B6112D25A154DD2048D62FEF384334B383EAA2F02E44EFE5080C"
+  },
+  {
+    "path": "validation\\Run_All_Reentry_Validations.m",
+    "sha256": "9D2346B9B96B9D1ECC2282924835E5C59690C2A3F134C9E86C731DE3A81F9E91"
+  },
+  {
+    "path": "validation\\Compare_Capsule_Separation_Sensitivity.m",
+    "sha256": "33D500DADB2FDE584BC8589623EAAD02FF78C44AD460ACB67A0A72453C235687"
+  },
+  {
+    "path": "validation\\Check_Reentry_Code.m",
+    "sha256": "29CB29DCA89FA4DCCFF9E50B837D2918FD59DCA665CAE5318C65DC3DB531EB16"
+  },
+  {
+    "path": "validation\\Check_Project_Code.m",
+    "sha256": "D60998B73C615563A53677E291C791DE5FB7D6EB6D4FBCEED028C3BEBC888A39"
+  },
+  {
+    "path": "THIRD_PARTY_NOTICES.md",
+    "sha256": "534299DB39BAF0A8B9FEA2C4F5CF483E1B7BF59A19EB2F621078DA6E5CFE1EEE"
+  },
+  {
+    "path": "Standard_Atmosphere_Density.m",
+    "sha256": "9793F03E763CE69DC74C1049CE79E956E680C70E3AB4EBA60FA2286B213A5703"
+  },
+  {
+    "path": "Run_Paper_Reproduction_Suite.m",
+    "sha256": "E7E9E521E12CA9A5910C0E78FFFD4F2C89199A51EA2FBA96B896722E6491799C"
+  },
+  {
+    "path": "Run_Mission.m",
+    "sha256": "DDB87A7402EDB7C122BAFE92397A869148E2BF9DE8D75E833F352E924DEA9EEF"
+  },
+  {
+    "path": "Run_Footprint_Study.m",
+    "sha256": "E94B6777DC6A202E7A85ACAC9045F3AC0198FED5EF6525C714CE352CAF1DCCB5"
+  },
+  {
+    "path": "Run_Deorbit_Window_Study.m",
+    "sha256": "6481154B10909D68E70A9C04E28C258EDD7FFDA1F52BB6324D0E4E240E4F46F9"
+  },
+  {
+    "path": "results\\README.md",
+    "sha256": "0F00ECD485B1424A16A89E41FBECB6F2FC621B2E20CE18C17736B16B32C638D0"
+  },
+  {
+    "path": "requirements.txt",
+    "sha256": "E13491531DF6EEB59D6420EF04D4B5651ADEC77439DA3BCCD7409E90F0988035"
+  },
+  {
+    "path": "Reentry_Propagator.m",
+    "sha256": "3D5D8CE76CCFE562E8D16E18EA234AACC208758F8D99EFC9ECCACA74D918EA8C"
+  },
+  {
+    "path": "README.md",
+    "sha256": "5EFC3A962D48BFF3DD0F486B2F980E0A9DD155EF404C8D71BF442162CE327E67"
+  },
+  {
+    "path": "Phasing_Propagator.m",
+    "sha256": "E9E9F25365AEE740977FC9295ED6BA3EF59A02C68B6F7982C4AD9367398765BF"
+  },
+  {
+    "path": "Env_EOM.m",
+    "sha256": "19C89E7563DBB33E85110FE3A1CDEEAFFFF5F1FE55C0874CC4D48E0F28256F79"
+  },
+  {
+    "path": "DragDeorbitDesigner.py",
+    "sha256": "BE128A55F29F55DB0C78D9978511734D54226780E1AF9AD1DA95B99C00A0F4D1"
+  },
+  {
+    "path": "+entry_design\\window.m",
+    "sha256": "E774C8B1F7B80473C6DE67FA5ED48A75D65F2FECA0D038E7A20411D659364988"
+  },
+  {
+    "path": "+entry_design\\vehicle.m",
+    "sha256": "074A1BE22276BCCAA08DBE338F84886417CDF9131155D09E0897DBC05CA50EA3"
+  },
+  {
+    "path": "+entry_design\\target.m",
+    "sha256": "FBA16F7850EE15E293BBC6D33E725FA59A03B640AE4953BC56468B9631D57236"
+  },
+  {
+    "path": "+entry_design\\propagate.m",
+    "sha256": "C5717FA097CA051D4C4283C13B3BB3AA2170A425AA01CBCDBDD6DCEE212423CB"
+  },
+  {
+    "path": "+entry_design\\initial_state.m",
+    "sha256": "99076F3C5ADED671DD078438381AC34D98A3707701EFDEA51C0980401FE21C51"
+  },
+  {
+    "path": "+entry_design\\geography.m",
+    "sha256": "42B10CED0178414543411A00DC4CE0248F728FDC376F7B9EE5F59996B00AEAC0"
+  },
+  {
+    "path": "+entry_design\\footprint.m",
+    "sha256": "6BE04688D7B363CC072B15A54486D7F9874AB0991EE52DEDFA167A434D24B6B0"
+  },
+  {
+    "path": "+entry_design\\ecef.m",
+    "sha256": "7EEF4BC65E742B443C4719818B129D509F54A813274ADD10F59955B5B5803367"
+  },
+  {
+    "path": "+entry_design\\earth_angle.m",
+    "sha256": "08B945F78C264DCB98C35E3E3F0F3FE3C5E482880FF81914BF7358AF62CA986F"
+  },
+  {
+    "path": "+entry_design\\dispersion.m",
+    "sha256": "B6B459F86DA68760C0B158B3560FAD41D7D2503CB6781E16AD279118F263F07D"
+  },
+  {
+    "path": "+entry_design\\defaults.m",
+    "sha256": "1B00F9857C65D7410BF8918908D543FB82BC75414CD63BA4296B5FC9DCD9A929"
+  },
+  {
+    "path": "docs\\RENDEZVOUS_REENTRY_REPORT_KR.md",
+    "sha256": "537BE4C1D0D09E71BB7CF0AD877D12668D95CE123DBB0CC1735A81E2DA3F7F95"
+  },
+  {
+    "path": "docs\\REENTRY_PAPER_MODELS.md",
+    "sha256": "3B5A7410AF2C18FA2E9329B9805FCFEF5BC72A1E550A94DE5391A2EFABAF6605"
+  },
+  {
+    "path": "docs\\PROXIMITY_DECISION_REPORT_KR.md",
+    "sha256": "FC4ABF98D16BAB63810A62457A7499F18BD733EC7D13FF62AE84EFE14878D578"
+  },
+  {
+    "path": "docs\\PROXIMITY_CONTROL_PLAN_KR.md",
+    "sha256": "5E736BFCB9B9ED2C32E9715181E51938C3B70288D6BA6503A85A9C67600057DD"
+  },
+  {
+    "path": "docs\\PAPER_REPRODUCTION_FRAMEWORK.md",
+    "sha256": "DE0B82959ABC22459CA3A0BB49DB01D9060070A645C2360EB49D12352A4943E3"
+  },
+  {
+    "path": "docs\\ENTRY_FOOTPRINT_REPORT_KR.md",
+    "sha256": "AE9E492D3B9818C3CC7D35FDB3EAC5371BDF33E0144E1AA03BA1FDDB759A7B6D"
+  },
+  {
+    "path": "docs\\DEORBIT_WINDOW_GUIDE_KR.md",
+    "sha256": "D547D37B888B4DE7DAFB82ECBD309578E19BCF4056CA9F4D51A9ACD614B604D0"
+  },
+  {
+    "path": "docs\\CODE_REVIEW_KR.md",
+    "sha256": "24BE70831D123A54D240706A9AC8FF066BFD4EF0D1411A2A0C93EB5E92F6E26E"
+  },
+  {
+    "path": "legacy\\2April2026\\Phasing_Propagator.m",
+    "sha256": "264A71DC58BA0D5FAD0846DEB62EBA072483AB3B1BA5A06357EDA2C525D94000"
+  },
+  {
+    "path": "legacy\\2April2026\\Mission_Config.m",
+    "sha256": "99BF63E1767F0AF69BD7E99DB7BE35C417572E23637B64CD5ACC3BC8137C191C"
+  },
+  {
+    "path": "legacy\\2April2026\\Main_Mission_Simulator.m",
+    "sha256": "14016574DCEFD0EE9488F3688A8982F8788788E1F7A6C417C70C6489BF2A1199"
+  },
+  {
+    "path": "legacy\\2April2026\\GNC_Controller.m",
+    "sha256": "9E5FD5B6E0BE29997E169BABF1A8E6DFAD33CD2760B9E7AFAA83AC09D43E0811"
+  },
+  {
+    "path": "legacy\\2April2026\\Env_EOM.m",
+    "sha256": "7BA559086FED9F842ECBF43B37666B45D6A8BEBFF8DFD3F0FC9C36932CD4DA72"
+  },
+  {
+    "path": "docs\\ASSUMPTIONS_AND_LIMITATIONS.md",
+    "sha256": "2FA0A815D1B60D51D0AE071444F91E8E6726FC69012FE065907590AD889EB7C9"
+  },
+  {
+    "path": "docs\\ARCHITECTURE.md",
+    "sha256": "21B01E8F20D7616E4A5171FDE86D974497EE5CD1E2291B8FE64C8A419DFAE55C"
+  },
+  {
+    "path": "+reentry_core\\rk4_step.m",
+    "sha256": "9B4B66A8CAEE37B0E8F3D1C093520D72A1CA1FC5ECD6D9F92F2FC0E6DB4002BE"
+  },
+  {
+    "path": "+reentry_core\\resolve_commands.m",
+    "sha256": "574F53619ED3DDE86EFAEFA4A0EEBB5F9DCC462D5DEF7CD452F17435FCB44F75"
+  },
+  {
+    "path": "+reentry_core\\refine_speed_crossing.m",
+    "sha256": "366AA5341EF35177CAE5F7114F80CEF9AE4F196783A82B170593C6D80F938210"
+  },
+  {
+    "path": "+reentry_core\\refine_altitude_crossing.m",
+    "sha256": "A27EB43C9DEAAA4235106E85958AE8AFB1C59AB7FB7AD11FCD4BCC9CB7E76335"
+  },
+  {
+    "path": "+reentry_core\\raap_deg.m",
+    "sha256": "3A61E9E7FE701A27B53DE2CE94169B43D7E0233DD83AE55A5368E45BABB157C7"
+  },
+  {
+    "path": "+reentry_core\\private\\lookup_ld.m",
+    "sha256": "D908EFAD810A74303B3E6F164F7A0349ABA7334374ECD91D4EB4C8B17A2D719B"
+  },
+  {
+    "path": "+reentry_core\\private\\get_field.m",
+    "sha256": "9F7277DA1B75529C0E3A506C1D5F386C6EEDC8724D0B54FA972B43FDA67718DD"
+  },
+  {
+    "path": "+reentry_core\\private\\get_bool.m",
+    "sha256": "27C7A9C383F90D6892325EA86752D48B35FD12D3C9FCB76BA97DF9AABA53D0AB"
+  },
+  {
+    "path": "+reentry_core\\private\\atmosphere_options.m",
+    "sha256": "D194D6BF11E059426CE7911C0FF0EA2463398EBD515BC740E279085772B85E23"
+  },
+  {
+    "path": "+reentry_core\\line_of_sight_geometry.m",
+    "sha256": "FC300300FB7FF63B67AF5A286ABA370A55459E24CB77776D2CE2E4855EB4775D"
+  },
+  {
+    "path": "+reentry_core\\lift_direction.m",
+    "sha256": "EFE8E301E0513AB1EA29C59953E20AA7B2AB72410CD0E64833AC1284A4EF839E"
+  },
+  {
+    "path": "+reentry_core\\gravity_acceleration.m",
+    "sha256": "6968B58F05B510EB9BD863EB3A8AA867732DB020B99FE9D68E826F1E2727F6F6"
+  },
+  {
+    "path": "+reentry_core\\flight_path_angle_deg.m",
+    "sha256": "3F1000C8FE3F0B5BBE121A244BBC0C68175FDECC4E9C576D3AAABB77398E42A4"
+  },
+  {
+    "path": "+reentry_core\\evaluate_state.m",
+    "sha256": "C29678FCDB5C0B18177D0CFCF43377D6FCC383207DA7E69BE112FBF93D67A7C3"
+  },
+  {
+    "path": "+reentry_core\\dynamics.m",
+    "sha256": "189E52550C4DA7F88C2EFFA23AC8C5231F835CA9FEB12890935FA41281169B61"
+  },
+  {
+    "path": "+reentry_core\\antenna_geometry.m",
+    "sha256": "090C887D171B6BFF6C02F4676EAA9AE0FE8C0C3257680EC035B6ED0ACB4EAACB"
+  },
+  {
+    "path": "+reentry_core\\aerodynamic_coefficients.m",
+    "sha256": "631F0939657451D6153FD18CA85DFD45E5973D52D9C843ED2B1B96B6225B1E8D"
+  },
+  {
+    "path": "configs\\python_solution_index.json",
+    "sha256": "2094EB9B6AE8DE7253E97A8A3DB20C765209F681909B08540FC92FED2407EB3D"
+  },
+  {
+    "path": "legacy\\21May2026\\Phasing_Propagator.m",
+    "sha256": "7CD5FD6B1A83E08941F43172F97445CA0D5CEB80F8F07512943538457BC6BF8F"
+  },
+  {
+    "path": "legacy\\21May2026\\Mission_Config.m",
+    "sha256": "224E082BC9DB7AEB26E7AD3218DE341A5B69EF66CDC52AEC49E45FD662BF0F02"
+  },
+  {
+    "path": "legacy\\21May2026\\Main_Mission_Simulator.m",
+    "sha256": "99AEB7FD7E7ECC77F44D6CF0C762A67B3C88ED4EA6284EDD658BEB7203CDF795"
+  },
+  {
+    "path": "legacy\\21May2026\\GNC_Controller.m",
+    "sha256": "9E5FD5B6E0BE29997E169BABF1A8E6DFAD33CD2760B9E7AFAA83AC09D43E0811"
+  },
+  {
+    "path": "legacy\\21May2026\\Env_EOM.m",
+    "sha256": "7BA559086FED9F842ECBF43B37666B45D6A8BEBFF8DFD3F0FC9C36932CD4DA72"
+  },
+  {
+    "path": "J2PolarHohmannShooting.py",
+    "sha256": "4F3DC2DACE98E6AADF71EF7C111E58AACFE6CE6BC099AA026E37A7030D8750E9"
+  },
+  {
+    "path": "J2PolarHohmann.py",
+    "sha256": "97D3B3E917E3FC7CEE5EB42C472DF5F6AB4D91BBD07CD61A55C8DC921FD58DA4"
+  },
+  {
+    "path": "examples\\README.md",
+    "sha256": "89BB6A5038AE03323FA1921555823A5338F4B7DB67D6BFB34FE680D0E38EA372"
+  },
+  {
+    "path": "configs\\python_runs\\impulsive_drag-off_h300.0-500.0_phase90.0_31c1e45c_410e0069_20260630_134559Z.json",
+    "sha256": "0898FC109C2050EB33245723A68D83569093C14C53279D31911A97622005C82B"
+  },
+  {
+    "path": "configs\\python_runs\\finite_burn_drag-off_h300.0-500.0_phase90.0_2413dca6_e937c0c4_20260630_155605Z.json",
+    "sha256": "5208CF2BE8BAB46BC831A9D961B49DE76285F21169CFD3F2D400B0C523A95108"
+  },
+  {
+    "path": "configs\\latest_python_solution.json",
+    "sha256": "5208CF2BE8BAB46BC831A9D961B49DE76285F21169CFD3F2D400B0C523A95108"
+  },
+  {
+    "path": "configs\\latest_drag_deorbit_solution.json",
+    "sha256": "E8CDD1FE1657C84A13B61DC27DD5D5DA89386A7C85A146179B634F68F5674C50"
+  },
+  {
+    "path": "configs\\drag_deorbit_solution_index.json",
+    "sha256": "09F4D9DA1F66E30061EBFC4AE0098D9E9AEE8A418EC8EA76739F4F4EE18FB742"
+  },
+  {
+    "path": "+orbit_core\\relative_state.m",
+    "sha256": "66FDB70C7792E286703EBD49050F4338AB64786FF01CA8BF2E996313A619C1BE"
+  },
+  {
+    "path": "+orbit_core\\gravity_j2.m",
+    "sha256": "F2A1B97B2C772E2AFE089957A221147162A05AF040F15138785B157C4EA2D68C"
+  },
+  {
+    "path": "configs\\drag_deorbit_runs\\drag_deorbit_h500.0_ei120.0_fpa4.0_93cccf1b_a5158610_20260724_041008Z.json",
+    "sha256": "E8CDD1FE1657C84A13B61DC27DD5D5DA89386A7C85A146179B634F68F5674C50"
+  },
+  {
+    "path": "configs\\drag_deorbit_runs\\drag_deorbit_h500.0_ei120.0_fpa4.0_8e03cc77_522f27e3_20260724_040012Z.json",
+    "sha256": "79239A6FEAB7778165C3D18681D1309E8E29E5ABCBBEECBD593C19E052978566"
+  },
+  {
+    "path": "Atmospheric_Drag_Acceleration.m",
+    "sha256": "5569DED326E521E74D7FEF09F22299C4F080628D543E3CFDB2946B5232480DCF"
+  },
+  {
+    "path": "Mission_Config.m",
+    "sha256": "BB4C640AD94A3E3FA4E0D14D6C8C9E35E2237D46980282FFC4E101A7B2B54AA0"
+  },
+  {
+    "path": "Main_Mission_Simulator.m",
+    "sha256": "2EDB41BCD05CF0428D056F10391AE3EE256D230D1462BC581AB4247DA67E0FCF"
+  },
+  {
+    "path": "mission_io.py",
+    "sha256": "69B48BD938E411C6A1EB4640ADAD7B7F3F7E362B454207DEB57E62E6E3CD641D"
+  },
+  {
+    "path": "Mission_Run_Config.m",
+    "sha256": "D5507DAFD44FC356DDC32FF76E8E99D80E1AAA2B7DEB90A9AB03FF1801717EE2"
+  },
+  {
+    "path": "+paperstudies\\+zhang\\status.m",
+    "sha256": "05E668E3A1390A454B8ED22A6C5DA7AE97C3EAC186E99324ACA4D32B3652B869"
+  },
+  {
+    "path": "+paperstudies\\+zhang\\selftest.m",
+    "sha256": "450690011B0CE08CB29F1B7215AD006880901B0D3A1C195080EC8BB0B5D5995B"
+  },
+  {
+    "path": "+paperstudies\\+zhang\\run.m",
+    "sha256": "A5538F3032482D270D820FD1ABC25CE4791CD7ECEC21BDF8065197535229BB97"
+  },
+  {
+    "path": "+paperstudies\\+zhang\\README.md",
+    "sha256": "296523F07A10F8D542473886C0E319F14AC9B67182BCAD559699C4F69F557765"
+  },
+  {
+    "path": "+paperstudies\\+zhang\\raap.m",
+    "sha256": "439F5BD426A22FC36807425AE66B33CBE9D2D95ECAC51E2850022ED76DC9AA9C"
+  },
+  {
+    "path": "+paperstudies\\+zhang\\entry_state.m",
+    "sha256": "C8E2DDEB4F87E95F23C8FCD6CD09597257CBC6C07DC561AE71C1E50117AFC590"
+  },
+  {
+    "path": "+paperstudies\\+zhang\\dimensionless_dynamics.m",
+    "sha256": "D83045B8E6347E0212BF72DF686328D4BBFBA8A08217682BEFA9B8897E43326E"
+  },
+  {
+    "path": "+paperstudies\\+zhang\\configure_system.m",
+    "sha256": "C3D4C8624C6D38E2E2FF0A8BEA5B2485858890CB654D23CA1423B8E82C06B2EB"
+  },
+  {
+    "path": "+paperstudies\\+zhang\\config.m",
+    "sha256": "A62D92BBDE3CE48C404AB96717182B0DCDCB5DD7B1D5A6368CA82B6252029A9A"
+  },
+  {
+    "path": "+paperstudies\\+zhang\\compare_forward.m",
+    "sha256": "B5FA9E496D8A6DDFF03E679F292D19C3F4A60672122C93D1EAFD5F34A7397936"
+  },
+  {
+    "path": "+paperstudies\\+zhang\\augmented_dynamics.m",
+    "sha256": "3EAA7F673DC4A268AA3F0602ABC90D3990E70F0E16B2BC99952FED1C6BF75EA5"
+  },
+  {
+    "path": "+paperstudies\\+zhang\\aoa.m",
+    "sha256": "AB0A2BA0513F0A10A02F103063EEC5CED962C8950CD579023EB6CDC75CC8EF97"
+  },
+  {
+    "path": "+paperstudies\\+zhang\\aero.m",
+    "sha256": "6B7EAC89ADC23C09341C6F565E8FEE19B33CAFB0C984162D1DB8D39AE86F54A0"
+  },
+  {
+    "path": "+paperstudies\\+saito\\table6_deorbit_grid.m",
+    "sha256": "B3A962FCB7E84184227DEE07EA18218C055DD0F5F111C4D2334D7F890C89BB29"
+  },
+  {
+    "path": "+mission\\validate_configuration.m",
+    "sha256": "911A829F42C9AA63B0EF33A6562775DA4AABF95617D4BA0684E621DE4E124907"
+  },
+  {
+    "path": "+paperstudies\\+saito\\status.m",
+    "sha256": "EB487A9027C5A88E5CB3DB9C1FE7E43653D6AB34882CDF0A3FC1AF5F27EFEDD4"
+  },
+  {
+    "path": "+mission\\validate_apogee_burns.m",
+    "sha256": "8F69E5EF31EE9B72AADE15BCD7DD886582EE7C3FBEA947D28DA88673826706A7"
+  },
+  {
+    "path": "+paperstudies\\+saito\\selftest.m",
+    "sha256": "BCFDA49836290B9CF3D0472A2CA65A0269DF39ECF0AA3B4A410BAF83C06C7EA4"
+  },
+  {
+    "path": "+mission\\track_rbar.m",
+    "sha256": "56BA27CB784B0A648BEC4B3187A69A7A68D4765CE2D2C25E230EF23A7ABD5403"
+  },
+  {
+    "path": "+paperstudies\\+saito\\run.m",
+    "sha256": "059CFD2471BB0DEF53984117537F311776522C9A40424918557496BBAFE06424"
+  },
+  {
+    "path": "+mission\\run.m",
+    "sha256": "2A7868DB7BC2320F2A025D0517EABAF4B4EAF6D16BC945C7DA749A8F7E1FE1DC"
+  },
+  {
+    "path": "+paperstudies\\+saito\\rpc_uncertainty_grid.m",
+    "sha256": "928C077066615A5A98EAD3D2BC1B011DCC4B587F4EC5D91FA7ECAA4CAFB5272E"
+  },
+  {
+    "path": "+mission\\report.m",
+    "sha256": "AF0BD8FE13236963F1B5AAF8CA5F3C39D6F7AFC00ADE0002CAC331CB89DEBE93"
+  },
+  {
+    "path": "+paperstudies\\+saito\\roundtrip_entry_state.m",
+    "sha256": "02D763A245F1A13C3889496F427E55D1EE0F4F4D781F0AB1895C100283380FE3"
+  },
+  {
+    "path": "+mission\\proximity_step.m",
+    "sha256": "514FA023E13787C3B699AAD519F2E8874B37F25210EEF95F49868012E782DA89"
+  },
+  {
+    "path": "+paperstudies\\+saito\\README.md",
+    "sha256": "777C3284B053A2E539186732A6EB3B28F6208AFD0D1060BCD02B81CD42E67923"
+  },
+  {
+    "path": "+mission\\proximity_dynamics.m",
+    "sha256": "660FF8AF977086251F859AB7056FB64D8207B76211290EE5BFCBA24963D862EA"
+  },
+  {
+    "path": "+paperstudies\\+saito\\explicit_uncertainty_grid.m",
+    "sha256": "CE19ABC6359A51B043A91C45E86C0589E4AB5A35641952903E11A5C50B10FC33"
+  },
+  {
+    "path": "+mission\\proximity_defaults.m",
+    "sha256": "B9DC75C0F3D1C646F7FFF4650520BD6AC9D3D3547780E2B5D0D1D8A7DFEF0018"
+  },
+  {
+    "path": "+mission\\proximity.m",
+    "sha256": "E6D166DF3728108819C6FB52190C9D20989DAD735DD7499096BB738988300B0E"
+  },
+  {
+    "path": "+mission\\project_root.m",
+    "sha256": "2CFCE6ECFD94BE19D6DED0A41CDBDA6B6B3D33714C2E9A81810CBAE026CA58F1"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq26_aero_coefficients.m",
+    "sha256": "419F38D5E0CD829908248B8F164D6D9DA845984EE42E7578F526EC92DBB8FE49"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq25_terminal_bank_secant.m",
+    "sha256": "FD64E21E8B1F59380646B756378D4F6028CECC7F46258201C170004D5AD5443E"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq24_fading_filter.m",
+    "sha256": "58D8F36216C532B8A55C82FF4C30BDEA387F714CEFD52BDA2DBCCE83135E9418"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq23_rpc_bank_command.m",
+    "sha256": "8CADC93887898ACC942CD4D793279656E9E289BD9631558443371B7F065D8E15"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq22_gain_F3.m",
+    "sha256": "29ED9ACB955D565047568A5260DF20496A7AF6725272B2DC78C4A2AE228DA508"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq21_gain_F2.m",
+    "sha256": "AFD6B6A8D8DA7A88F69DD7F60621257D9D6029330059F308AE72EA366131A66D"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq20_gain_F1.m",
+    "sha256": "D770FCF083A9E73C12E0FF7F93A933F4BA09B169F4E864BC57BA327BAA9FD714"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq19_reference_altitude_rate.m",
+    "sha256": "01AB8DE355FE20C0029F87DAD99A08F0EF8D4DFE891BDB3D43C42183AE220FC9"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq18_reference_drag.m",
+    "sha256": "A1CFF552836E6AB9A1A08F6DC3E7EA9C4DCA8ED425EE82F00455CC2BD7796D46"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq17_reference_range.m",
+    "sha256": "DB3A7687824B5945B653CBD078B67E6DE9A05C5F2BCBD1D1F84F150F18D399DE"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq16_guidance_range.m",
+    "sha256": "44F8242CC576153C696AFF817498E528508904B7B222E57E540EF9A158ADF32B"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq15_bank_command.m",
+    "sha256": "84D9F45C957BDC2C2C2436ABFF285BBCE3E8E5E000A0660649E81D12BC880F42"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq14_range_to_go.m",
+    "sha256": "A41A968C66934B82EE7EBD1BB4F3C35CF95FB6B52479B8C44056678C90A4E842"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq13_ld_command.m",
+    "sha256": "A7494E077916BE067FE32C36D4039ADEA86ADCBD7B65613948777F7F39B59FEB"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq12_force_transform.m",
+    "sha256": "70AA1187B6867B688A33DBA4BDA5DF0458C0AC7BC43F1FF04B2F07C4A52FCE2D"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq11_aero_forces.m",
+    "sha256": "3BC7F0D3A9E8DFD547C538372C25619E3B54240ACD93954949E0BEF5A837DA41"
+  },
+  {
+    "path": "+paperstudies\\+saito\\eq10_spherical_dynamics.m",
+    "sha256": "3360028E2853F467DD675F8C86062E3EA0146F1C33FA246DB23743B126BE92D1"
+  },
+  {
+    "path": "+paperstudies\\+saito\\entry_state.m",
+    "sha256": "70850CBE7E820D815EAF3831ED041C621BD9ED2A3FE3EC348437F52BC25C15D5"
+  },
+  {
+    "path": "+paperstudies\\+saito\\config.m",
+    "sha256": "7F1F0583176EC173E8BA71B99FB04DC793AD1E7A1972AF38A3F0CDA758B8DDA8"
+  },
+  {
+    "path": "output\\proximity\\study_results.json",
+    "sha256": "E530BC5C741B197F1D9EBF0EA0B2A145253AA1429D7D4E68E2D948CE50C53043"
+  },
+  {
+    "path": "output\\deorbit_window\\verification.json",
+    "sha256": "D3A1DEECB2E9AF22C1AE47710DD791D5C7AA5F327A1F6CCD4CCAE4786054334E"
+  },
+  {
+    "path": "+mission\\deorbit.m",
+    "sha256": "5B4BC3E76D640FE6093FB9C9CF230AE62F34256D74C74A4A5146DE4CAE6F276E"
+  },
+  {
+    "path": "+mission\\cw_departure.m",
+    "sha256": "4773A46951349B580A41825C5C28B04629DFA2B748FC64B61DBA033B38660247"
+  },
+  {
+    "path": "+mission\\configure.m",
+    "sha256": "DECF7AEE8B98AADFBC2B0DB54FD8539772570C410326763606FFA0376CA8CD64"
+  },
+  {
+    "path": "+mission\\autonomous_proximity.m",
+    "sha256": "0247415BE062F3EB3157E164E1B1A49AE46A8E42D3892A0C2C92F83DB7A544DF"
+  },
+  {
+    "path": "+mission\\apogee_deorbit.m",
+    "sha256": "B0FCB1D3C4B24F59D4B3A3CDE08EDB085527707DECA2621572EE83911AA4F208"
+  },
+  {
+    "path": "+mission\\apogee_burn_defaults.m",
+    "sha256": "C49B113E979A8D146DC20664599AD110B765BB54E4EDCE78E59BE2C1F0C86320"
+  },
+  {
+    "path": "+mission\\load_optimizer_config.m",
+    "sha256": "36F4CE478CD62F490BA126F412CAFB4821B6B21EBDD90B46DBD0A5FA54EF290C"
+  },
+  {
+    "path": "+mission\\entry_interface.m",
+    "sha256": "2E8C986B664AD22D63A6514464D470E81C055BC77520B8F4918F703FB2AD9E09"
+  },
+  {
+    "path": "+mission\\entry.m",
+    "sha256": "A017EF49ACF988676AAE4DEC85394918A01D66AC63CE586E773C2864B2EBC1EA"
+  },
+  {
+    "path": "+mission\\plan_closing.m",
+    "sha256": "64010B84F743BC87EFFA20F15BEC907F7E26C8353D7A1F2666CABDC326B55B5B"
+  },
+  {
+    "path": "+mission\\merge_settings.m",
+    "sha256": "8A8051BD21646E4367B0FA5309A8E9F6FDBF61FC17AF664F1C1DC4E70FBAA28F"
+  },
+  {
+    "path": "+mission\\plot_results.m",
+    "sha256": "BFC7392B6581A8F5F4E661C3492B2C59A5C49C0F527055028E69AA3A45C9330E"
+  },
+  {
+    "path": "+mission\\private\\parse_bool_setting.m",
+    "sha256": "DF1CEDA2486729F6AE65A7F8E9E21F99D5ED1C80DE81FF257ABB3DDBF022CD7C"
+  },
+  {
+    "path": "+mission\\private\\orbital_drag_enabled.m",
+    "sha256": "87F960D5427896941B538FD23A7B2E8EBB806917D92477FFB4C05402F3F727ED"
+  },
+  {
+    "path": "+mission\\private\\is_absolute_path.m",
+    "sha256": "DDCF8DE156F0CA7CF3BB47A46C314BA56E58B4202BB85B9A1F9A0D2827009A38"
+  },
+  {
+    "path": "+mission\\private\\has_run_path.m",
+    "sha256": "29495BE4715BEC70E9A1E4AAF252C973F4133D43979D4BBF4857161EC15659C9"
+  },
+  {
+    "path": "+mission\\private\\has_json_path.m",
+    "sha256": "180708AD29268B3C841FAEF57667E401DADA4266CD40F1FA300F25195B4382DD"
+  },
+  {
+    "path": "+mission\\private\\get_run_value.m",
+    "sha256": "30D5C61AA5C753E8DC6CEEAEE448F6E73040CBEC609718E36121088F454DD381"
+  },
+  {
+    "path": "+mission\\private\\get_run_string_field.m",
+    "sha256": "7978DEF2D23A7FD4A04FDDA8A56640074A94E7262BB79C93F959AC3C664CF9E6"
+  },
+  {
+    "path": "+mission\\private\\get_run_bool_field.m",
+    "sha256": "423CAC69BE9CE2FFC3C0836DFD09C132784421D7E0DC876B61971A1F8E69D859"
+  },
+  {
+    "path": "+mission\\private\\get_json_value.m",
+    "sha256": "DD5AA988364B34892FCA1EDEB770D1A695AA26545AD06D3466217D70DED6F5D2"
+  },
+  {
+    "path": "+mission\\private\\get_json_string.m",
+    "sha256": "771280526066073328C7A2680A713DA98C3EAE23939DB1AB9C8526A6E683CFDF"
+  },
+  {
+    "path": "+mission\\private\\get_json_number.m",
+    "sha256": "6429BAE57E715DC627F8ACBE8E583BF5A481EDCB3F65DB0365DE1FBA00B2F48F"
+  },
+  {
+    "path": "+mission\\private\\get_json_bool.m",
+    "sha256": "0322A1B63A1FE7AE69263BC58413A4317C93CB648144A38AE5FA75A0D88324E9"
+  },
+  {
+    "path": "+mission\\private\\flight_path_angle_deg.m",
+    "sha256": "FFB6E0CB9A8725C26B75BF9942D3A264BF0DFEB9BDFB86A80F1BBF392A30E623"
+  },
+  {
+    "path": "+mission\\private\\drag_starts_after_berthing.m",
+    "sha256": "F77908251D6B3C7CE814FC1523BF5B9E38218AB9D35F71DD12DDAEDD67350478"
+  },
+  {
+    "path": "+mission\\private\\bool_label.m",
+    "sha256": "7E94B03543BFE7B3CF22C41BFD7A6C17DC4DF42C92F456C30A9F56BF43198E6D"
+  },
+  {
+    "path": "output\\footprint\\validation_results.json",
+    "sha256": "6511145ADDB345F4FBE4CD2A0DEC0434868781810293C2A7EDD6EEAF086E88B8"
+  },
+  {
+    "path": "output\\footprint\\target_refinement.json",
+    "sha256": "AB3952B9E2A1C1C28B0D4482604D496AC2E6B05B653942C366E03D2AEB87C531"
+  },
+  {
+    "path": "output\\footprint\\footprint_results.json",
+    "sha256": "3382B817B7EBFC34056D051315379FFE13AE6A3E8C1C3BE4FBBA5E9D496525E7"
+  }
+]

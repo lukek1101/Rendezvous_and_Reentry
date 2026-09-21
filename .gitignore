@@ -54,6 +54,8 @@ Desktop.ini
 # results/figures/
 # results/tables/
 # results/mat/
+/output/deorbit_window*/window_results.mat
+/output/deorbit_window_validation/
 
 
 # =========================

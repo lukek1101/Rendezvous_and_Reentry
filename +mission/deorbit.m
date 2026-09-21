@@ -451,7 +451,7 @@ function [X_chaser, X_target, hist, elapsed] = propagate_until_altitude(X_chaser
         hist = log_phase3_state(hist, X_chaser, X_target, t0 + elapsed);
     end
 
-    error('Re-entry coast did not reach %.1f km altitude within %.2f min.', target_alt/1000, max_time/60);
+    error('mission:NoEntry','Re-entry coast did not reach %.1f km altitude within %.2f min.', target_alt/1000, max_time/60);
 end
 
 function [X_cross, T_cross, t_cross] = refine_altitude_crossing(X0, T0, target_alt, dt_window, sys, t_abs0)

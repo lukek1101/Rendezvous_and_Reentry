@@ -249,7 +249,9 @@
     "max_g_load": null,
     "max_heat_flux_W_m2": null,
     "max_heat_load_J_m2": null,
-    "target_tolerance_m": 10000
+    "target_tolerance_m": 10000,
+    "target_max_iterations": 35,
+    "target_max_evaluations": 80
   },
   "initial_state_eci": [
     6.498137E+6,

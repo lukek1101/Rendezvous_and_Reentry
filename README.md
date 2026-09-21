@@ -13,6 +13,12 @@ The project is designed as a mission-level simulation framework rather than a si
 
 Optional apogee-split finite deorbit and a separate footprint/target/window
 calculator are now available. Run `Run_Footprint_Study` for a two-vehicle example.
+Run `w = Run_Deorbit_Window_Study()` to search deorbit start candidates for
+36.5 N, 130.5 E from the configured mission's Phase 2 terminal state. To reuse
+an existing run, call `w = Run_Deorbit_Window_Study(mission_result)`.
+Verified samples are in `w.candidates`; all trials, trajectories, CSV tables,
+and a plot are saved under `output/deorbit_window`. See the
+[target window usage and assumptions](docs/DEORBIT_WINDOW_GUIDE_KR.md).
 Enable `phase3.apogee_burns.enabled` for scheduled finite burns. See the
 [entry footprint report and API](docs/ENTRY_FOOTPRINT_REPORT_KR.md).
 The default footprint endpoint is 20 km altitude, not touchdown; the sample

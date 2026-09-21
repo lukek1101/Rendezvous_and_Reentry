@@ -1,0 +1,16 @@
+Audit run: 2026-09-21; repository root working directory.
+Command: python -m unittest discover -s validation -p 'test_*.py' -v
+Process exit code: 0
+Test runner: Ran 6 tests in 0.154s; OK
+
+PASS test_corrupt_index_is_not_silently_overwritten
+PASS test_deorbit_export_round_trip
+PASS test_existing_archive_hashes_are_preserved
+PASS test_failed_serialization_keeps_existing_file
+PASS test_shared_exports_and_numpy_serialization
+PASS test_upsert_keeps_other_cases_and_orders_by_time
+
+Runtime: Python 3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48)
+MSC v.1944 64 bit (AMD64)
+numpy 2.4.6; scipy 1.17.1; matplotlib 3.10.9
+No Python optimizer was run. This is a transcription of the observed test output.

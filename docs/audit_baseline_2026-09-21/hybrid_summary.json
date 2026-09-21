@@ -1,0 +1,47 @@
+{
+  "matlab_version": "25.1.0.2973910 (R2025a) Update 1",
+  "phase1_error_m": 0.13433410802699292,
+  "phase1_duration_s": 32996.731705843835,
+  "phase2_duration_s": 10680,
+  "phase2_error_m": 0.0007109938472974446,
+  "phase2_speed_m_s": 3.8316424345009525E-6,
+  "phase2_delta_v_m_s": 64.891782444289134,
+  "entry_interface": {
+    "time_s": 2159.8417340182514,
+    "altitude_m": 120000,
+    "velocity_m_s": 7924.6475591213339,
+    "fpa_deg": -1.0881200784310889
+  },
+  "entry_termination": "PARACHUTE_SPEED",
+  "budget": [
+    {
+      "Phase": "Phase 1: CUSTOM_IMPULSE",
+      "DeltaV_ms": 57.992996742104424,
+      "Fuel_Consumed_kg": 60.018794445702952,
+      "Remaining_Mass_kg": 1999.981205554297,
+      "Total_Accounted_Mass_kg": 1999.981205554297
+    },
+    {
+      "Phase": "Phase 2: HYBRID_IMPULSE_CLOSING_FINITE_FINAL",
+      "DeltaV_ms": 64.891782444289134,
+      "Fuel_Consumed_kg": 65.0879072440373,
+      "Remaining_Mass_kg": 1934.8932983102598,
+      "Total_Accounted_Mass_kg": 1934.8932983102598
+    },
+    {
+      "Phase": "Phase 3: HOHMANN",
+      "DeltaV_ms": 122.2274526303645,
+      "Fuel_Consumed_kg": 116.8996092048319,
+      "Remaining_Mass_kg": 1817.9936891054278,
+      "Total_Accounted_Mass_kg": 1817.9936891054278
+    },
+    {
+      "Phase": "Phase 4: Atmospheric Entry",
+      "DeltaV_ms": 0,
+      "Fuel_Consumed_kg": 0,
+      "Remaining_Mass_kg": 60,
+      "Total_Accounted_Mass_kg": 1817.9936891054278
+    }
+  ],
+  "elapsed_s": 19.9419049
+}

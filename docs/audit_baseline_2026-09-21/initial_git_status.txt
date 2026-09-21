@@ -1,0 +1,13 @@
+ M +entry_design/window.m
+ M +mission/deorbit.m
+ M +mission/run.m
+ M .gitignore
+ M README.md
+ M Run_Mission.m
+ M output/footprint/footprint_results.json
+ M output/footprint/footprints.png
+ M output/footprint/validation_results.json
+?? Run_Deorbit_Window_Study.m
+?? docs/DEORBIT_WINDOW_GUIDE_KR.md
+?? output/deorbit_window/
+?? validation/Validate_Deorbit_Window_Study.m

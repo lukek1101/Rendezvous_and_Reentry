@@ -1,5 +1,6 @@
-function result = run(cfg)
+function result = run(cfg,stop_after_proximity)
 %RUN Execute the four mission phases using an already resolved configuration.
+if nargin<2, stop_after_proximity=false; end
 sys = cfg.proximity_system;
 custom_params = cfg.phase1;
 phasing_mode = cfg.phase1_mode;
@@ -64,6 +65,10 @@ end
 m_current = X_chaser(14);
 Budget = [Budget; {"Phase 2: "+result.proximity.execution_model, result.proximity.delta_v, ...
     result.proximity.fuel, m_current, m_current}];
+if stop_after_proximity
+    result.budget=Budget;
+    return;
+end
 
 sys = cfg.system;
 fprintf('\n[Phase 3] De-orbit to %.1f km interface...\n', sys.h_entry_interface/1e3);

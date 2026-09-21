@@ -1,0 +1,92 @@
+[
+  {
+    "path": "configs\\python_solution_index.json",
+    "bytes": 2649,
+    "sha256": "2094EB9B6AE8DE7253E97A8A3DB20C765209F681909B08540FC92FED2407EB3D"
+  },
+  {
+    "path": "configs\\drag_deorbit_solution_index.json",
+    "bytes": 1912,
+    "sha256": "09F4D9DA1F66E30061EBFC4AE0098D9E9AEE8A418EC8EA76739F4F4EE18FB742"
+  },
+  {
+    "path": "output\\proximity\\study_results.json",
+    "bytes": 7882,
+    "sha256": "E530BC5C741B197F1D9EBF0EA0B2A145253AA1429D7D4E68E2D948CE50C53043"
+  },
+  {
+    "path": "configs\\python_runs\\impulsive_drag-off_h300.0-500.0_phase90.0_31c1e45c_410e0069_20260630_134559Z.json",
+    "bytes": 2720,
+    "sha256": "0898FC109C2050EB33245723A68D83569093C14C53279D31911A97622005C82B"
+  },
+  {
+    "path": "output\\proximity\\proximity_comparison.png",
+    "bytes": 145351,
+    "sha256": "3FF3632615A76E807D49B7C3ABD25F59C058968A2E59919BBADEBBEE83AD4A52"
+  },
+  {
+    "path": "configs\\python_runs\\finite_burn_drag-off_h300.0-500.0_phase90.0_2413dca6_e937c0c4_20260630_155605Z.json",
+    "bytes": 2736,
+    "sha256": "5208CF2BE8BAB46BC831A9D961B49DE76285F21169CFD3F2D400B0C523A95108"
+  },
+  {
+    "path": "configs\\latest_python_solution.json",
+    "bytes": 2736,
+    "sha256": "5208CF2BE8BAB46BC831A9D961B49DE76285F21169CFD3F2D400B0C523A95108"
+  },
+  {
+    "path": "configs\\latest_drag_deorbit_solution.json",
+    "bytes": 2804,
+    "sha256": "E8CDD1FE1657C84A13B61DC27DD5D5DA89386A7C85A146179B634F68F5674C50"
+  },
+  {
+    "path": "output\\footprint\\validation_results.json",
+    "bytes": 7767,
+    "sha256": "6511145ADDB345F4FBE4CD2A0DEC0434868781810293C2A7EDD6EEAF086E88B8"
+  },
+  {
+    "path": "output\\footprint\\target_refinement.json",
+    "bytes": 250,
+    "sha256": "AB3952B9E2A1C1C28B0D4482604D496AC2E6B05B653942C366E03D2AEB87C531"
+  },
+  {
+    "path": "output\\footprint\\footprint_results.json",
+    "bytes": 4481,
+    "sha256": "3382B817B7EBFC34056D051315379FFE13AE6A3E8C1C3BE4FBBA5E9D496525E7"
+  },
+  {
+    "path": "output\\footprint\\footprints.png",
+    "bytes": 59955,
+    "sha256": "23E5F56696D353893E604BE0D91B1A9EB69D8981F53D9E1749179CA39DE2B8DB"
+  },
+  {
+    "path": "output\\deorbit_window\\all_samples.csv",
+    "bytes": 19694,
+    "sha256": "368D55E28B3219F15838A29C388BAB0B751A06EA1B5DC5C5F26B01AB8F6CFA7D"
+  },
+  {
+    "path": "output\\deorbit_window\\candidates.csv",
+    "bytes": 123,
+    "sha256": "4966127E39ECFBA817478533508198808AB2FC55349657F921322A0F90F3C794"
+  },
+  {
+    "path": "configs\\drag_deorbit_runs\\drag_deorbit_h500.0_ei120.0_fpa4.0_8e03cc77_522f27e3_20260724_040012Z.json",
+    "bytes": 2804,
+    "sha256": "79239A6FEAB7778165C3D18681D1309E8E29E5ABCBBEECBD593C19E052978566"
+  },
+  {
+    "path": "configs\\drag_deorbit_runs\\drag_deorbit_h500.0_ei120.0_fpa4.0_93cccf1b_a5158610_20260724_041008Z.json",
+    "bytes": 2804,
+    "sha256": "E8CDD1FE1657C84A13B61DC27DD5D5DA89386A7C85A146179B634F68F5674C50"
+  },
+  {
+    "path": "output\\deorbit_window\\verification.json",
+    "bytes": 269,
+    "sha256": "D3A1DEECB2E9AF22C1AE47710DD791D5C7AA5F327A1F6CCD4CCAE4786054334E"
+  },
+  {
+    "path": "output\\deorbit_window\\window_search.png",
+    "bytes": 92936,
+    "sha256": "9D896F026299955A877503CCC283CC3A630E7294B66B99252043C037DF776A14"
+  }
+]
