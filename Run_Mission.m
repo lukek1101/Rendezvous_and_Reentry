@@ -26,9 +26,6 @@ function result = Run_Mission(overrides, options)
     validateattributes(options.plot, {'logical'}, {'scalar'}, mfilename, 'options.plot');
     validateattributes(options.verbose, {'logical'}, {'scalar'}, mfilename, 'options.verbose');
     validateattributes(options.stop_after_proximity, {'logical'}, {'scalar'}, mfilename, 'options.stop_after_proximity');
-    if options.plot && options.stop_after_proximity
-        error('mission:PartialPlot','Full-mission plotting requires stop_after_proximity=false.');
-    end
     if ~isempty(options.seed)
         validateattributes(options.seed, {'numeric'}, ...
             {'scalar','integer','nonnegative','finite','<=',2^32-1}, mfilename, 'options.seed');

@@ -1,0 +1,8 @@
+{
+  "main_orbit_only_passed": true,
+  "full_matlab_suite_passed": true,
+  "code_analyzer_files": 154,
+  "guide_correction_example_passed": true,
+  "terminal_error_m": 0.00058706836928559228,
+  "full_entry_supported": false
+}

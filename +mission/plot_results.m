@@ -1,5 +1,28 @@
 function plot_results(result)
 %PLOT Render a stored mission result without re-running the simulation.
+if ~isfield(result,'entry')
+    figure('Name','Orbital Rendezvous: Phases 1-2','Color','w');
+    tiledlayout(2,2);
+    nexttile;
+    plot3(result.phasing.history.pos(1,:)/1e3,result.phasing.history.pos(2,:)/1e3, ...
+        result.phasing.history.pos(3,:)/1e3); hold on;
+    plot3(result.proximity.history.pos(1,:)/1e3,result.proximity.history.pos(2,:)/1e3, ...
+        result.proximity.history.pos(3,:)/1e3);
+    axis equal; grid on; xlabel('ECI X (km)'); ylabel('ECI Y (km)'); zlabel('ECI Z (km)');
+    title('Orbital trajectory'); legend('Phasing / homing','Proximity');
+    nexttile;
+    r=result.proximity.relative_position;
+    plot(r(2,:),r(1,:)); hold on; plot(0,0,'r+'); axis equal; grid on;
+    xlabel('V (m)'); ylabel('R (m)'); title('Proximity in LVLH');
+    nexttile;
+    plot(result.phasing.history.time/60,result.phasing.history.mass); grid on;
+    xlabel('Phase 1 time (min)'); ylabel('Stack mass (kg)'); title('Phasing mass budget');
+    nexttile;
+    plot(result.proximity.history.time/60,vecnorm(r)); grid on;
+    xlabel('Phase 2 time (min)'); ylabel('Separation (m)'); title('Approach to standoff');
+    sgtitle('ORBIT ONLY — atmospheric entry not executed');
+    return;
+end
 sys = result.config.system;
 hist_p1 = result.phasing.history;
 hist_p2 = result.proximity.history;

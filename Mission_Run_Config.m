@@ -5,6 +5,9 @@ function run = Mission_Run_Config(defaults)
     % Typical workflow:
     %   1) edit this file
     %   2) run Main_Mission_Simulator
+    % Main explicitly selects Python NONE / HOHMANN / NOMINAL_TARGET.
+    % Its ORBIT_ONLY scope overrides those three legacy/archive defaults below;
+    % the other settings in this file remain active. See docs/USER_GUIDE_KR.md.
     %
     % Mission_Config.m is the sole authority for the orbital scenario
     % (insertion/target altitudes and initial geometry). This file controls
