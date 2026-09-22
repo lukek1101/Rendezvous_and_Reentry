@@ -1,6 +1,7 @@
 function a = proximity_defaults()
 %PROXIMITY_DEFAULTS Research assumptions, not flight-qualified HTV parameters.
     a.handoff_dwell_s = 60;
+    a.approach_mode = "-R";
     a.insertion_range_m = 500;
     a.hold_range_m = 250;
     a.hold_time_s = 60;

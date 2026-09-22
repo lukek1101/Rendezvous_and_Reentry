@@ -32,6 +32,32 @@ function [X_final, dV_used, fuel_used, hist, X_target_final] = Phasing_Propagato
     hist = init_hist();
 
     if mode == "HOHMANN"
+        if pmode==1 && isfield(custom_params,'hohmann_method') && custom_params.hohmann_method=="NOMINAL_TARGET"
+            if string(custom_params.burn_model)~="IMPULSIVE" || custom_params.use_thrust_noise
+                error('mission:NominalScope','Nominal path requires deterministic impulsive execution.');
+            end
+            plan=mission.plan_nominal(sys,X0,X_target0,custom_params.desired_rel_lvlh, ...
+                custom_params.max_wait,custom_params.nominal,custom_params.max_single_burn_delta_v);
+            if ~plan.success
+                error('mission:NominalNotAccepted','Nominal targeting: %s; constraints: %s. Inspect mission.plan_nominal for diagnostics.',plan.numerical_status,plan.constraint_status);
+            end
+            X_final=plan.chaser; X_target_final=plan.target;
+            dV_used=plan.delta_v_m_s; fuel_used=plan.fuel_kg; hist=plan.history;
+            hist.planning=rmfield(plan,'history');
+            if isfield(custom_params,'correction') && custom_params.correction.enabled
+                execution=mission.execute_corrected_nominal(sys,X0,X_target0,custom_params.desired_rel_lvlh, ...
+                    plan,custom_params.nominal,custom_params.correction,custom_params.max_single_burn_delta_v);
+                if ~execution.success
+                    error('mission:CorrectionNotAccepted', ...
+                        'Disturbed execution: %s; position %.6g m, velocity %.6g m/s. Use mission.execute_corrected_nominal for retained diagnostics.', ...
+                        execution.execution_status,execution.position_error_m,execution.velocity_error_m_s);
+                end
+                X_final=execution.chaser; X_target_final=execution.target;
+                dV_used=execution.delta_v_m_s; fuel_used=execution.fuel_kg; hist=execution.history;
+                hist.planning=rmfield(plan,'history'); hist.execution=rmfield(execution,'history');
+            end
+            return;
+        end
         [X_state, X_target_state, dV, sub_hist] = execute_hohmann(sys, X_state, target_r, X_target_state, custom_params, pmode);
         dV_used = dV_used + dV;
         hist = append_hist(hist, sub_hist);

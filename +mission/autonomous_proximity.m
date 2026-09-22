@@ -1,6 +1,8 @@
 function [Xc, Xt, result] = autonomous_proximity(sys, Xc, Xt, p2)
 %AUTONOMOUS_PROXIMITY Hybrid research model: impulse closing, finite-force final.
     a = p2.autonomous;
+    axis=mission.approach_axis(a.approach_mode);
+    upstream=struct('chaser',Xc,'target',Xt);
     y = [Xc(1:6);Xt(1:6);Xc(14)]; initial_mass = y(13);
     [r,v] = orbit_core.relative_state(Xc,Xt);
     if norm(r-p2.S2)>p2.initial_S2_tol
@@ -19,7 +21,7 @@ function [Xc, Xt, result] = autonomous_proximity(sys, Xc, Xt, p2)
     history = [history closing_states]; times = [times closing_times];
     phase_names = [phase_names repmat("CLOSING",1,numel(closing_times))];
     [r,v] = orbit_core.relative_state(y(1:6),y(7:12));
-    if norm(r-[-a.insertion_range_m;0;0])>a.gate_position_tol_m
+    if norm(r-axis*a.insertion_range_m)>a.gate_position_tol_m
         error('mission:ProximityGate','Nonlinear closing arrival missed the R-bar gate.');
     end
     [y, arrival_dv] = impulse(y,-v); history(:,end)=y;
@@ -33,24 +35,27 @@ function [Xc, Xt, result] = autonomous_proximity(sys, Xc, Xt, p2)
         [relative(:,k),velocity(:,k)] = orbit_core.relative_state(history(1:6,k),history(7:12,k));
     end
     Xc(1:6)=y(1:6); Xc(14)=y(13); Xt=y(7:12);
-    p2.S3 = [-a.insertion_range_m;0;0]; p2.S4=[-p2.S4_R_abs;0;0];
+    p2.S3 = axis*a.insertion_range_m; p2.S4=axis*p2.S4_R_abs;
     h = struct('pos',history(1:3,:),'time',times,'mass',history(13,:), ...
         'rel_pos_lvlh',relative,'rel_vel_lvlh',velocity,'mode',phase_names);
     target_times = [0 a.handoff_dwell_s acquisition_time ...
         acquisition_time+control.gate_times([1 2 3 4])];
     targets = [p2.S2 relative(:,numel(dwell_times)+1) p2.S3 ...
-        [-a.hold_range_m;0;0] [-a.hold_range_m;0;0] p2.S4 p2.S4];
+        axis*a.hold_range_m axis*a.hold_range_m p2.S4 p2.S4];
     result = struct('history',h,'relative_position',relative,'mass',history(13,:), ...
         'targets',targets,'target_times',target_times,'transfer_times',diff(target_times), ...
-        'names',["S2 stop" "S2 depart" "R-bar 500 m" "250 m" "250 m depart" "30 m" "30 m verified"], ...
+        'names',["S2 stop" "S2 depart" "AXIS_ACQUIRED" "HOLD" "HOLD depart" "STANDOFF" "STANDOFF verified"], ...
         'config',p2,'delta_v',handoff_dv+departure_dv+arrival_dv+control.delta_v_m_s, ...
         'fuel',initial_mass-y(13),'duration',times(end), ...
         'final_position_error',control.final_error_m,'final_relative_velocity',velocity(:,end), ...
-        'reached_standoff',control.final_error_m<=p2.capture_pos_tol && ...
+        'reached_standoff',control.completed && control.final_error_m<=p2.capture_pos_tol && ...
             control.final_speed_m_s<=a.capture_speed_m_s, ...
         'plan',plan,'control',control,'execution_model',"HYBRID_IMPULSE_CLOSING_FINITE_FINAL");
     result.handoff = struct('delta_v',handoff_dv,'fuel',initial_mass-handoff_mass, ...
         'dwell_s',a.handoff_dwell_s,'departure_relative_position',targets(:,2));
+    result.upstream=upstream;
+    result.approach_mode=string(a.approach_mode);
+    result.constraint_violations=control.constraint_violations;
     result.closing = struct('delta_v',departure_dv+arrival_dv,'fuel',handoff_mass-closing_mass);
     result.final_approach = struct('delta_v',control.delta_v_m_s,'fuel',closing_mass-y(13));
     fprintf(['Phase 2 HYBRID: handoff %.4f m/s, closing %.4f m/s (%g s), ' ...

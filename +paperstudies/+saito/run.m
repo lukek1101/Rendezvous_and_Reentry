@@ -128,7 +128,7 @@ function forward = run_forward_surrogate(cfg, entry, options)
               'Mission_Config and Reentry_Propagator must be on the MATLAB path.');
     end
 
-    sys = Mission_Config();
+    sys = Mission_Config("LEGACY_CAPSULE_60KG");
     sys.reentry_vehicle.vehicle_mode = "CAPSULE";
     sys.reentry_vehicle.gravity_model = "CENTRAL_SPHERICAL";
     sys.reentry_vehicle.capsule.mass_kg = cfg.surrogate.mass_kg;

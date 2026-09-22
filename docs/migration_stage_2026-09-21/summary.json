@@ -1,0 +1,84 @@
+{
+  "reference_checks": {
+    "propagation": [
+      {
+        "preset": "ARD",
+        "duration_s": 20,
+        "position_refinement_m": 4.4233533100759262E-7,
+        "final_state_si": [
+          4.36564974727889E+6,
+          3.8514172688291855E+6,
+          2.7478828924224689E+6,
+          -3689.64678652162,
+          2812.5177303603155,
+          1194.3548645631624,
+          2800
+        ]
+      },
+      {
+        "preset": "HORUS_2B",
+        "duration_s": 20,
+        "position_refinement_m": 2.1360330429206903E-6,
+        "final_state_si": [
+          4.36632620233941E+6,
+          3.85195173130443E+6,
+          2.7482711283013234E+6,
+          -3617.9947532650131,
+          2872.1051139370047,
+          1237.2766490857628,
+          26029
+        ]
+      }
+    ],
+    "status": "PASS"
+  },
+  "hybrid_entry_requested": {
+    "altitude_m": 120000,
+    "fpa_inertial_deg": -1.16
+  },
+  "hybrid_entry_achieved": {
+    "schema_version": 2,
+    "source": "PROPAGATED_DEORBIT_TERMINAL",
+    "time_since_mission_epoch_s": 45836.573439862084,
+    "epoch": {
+      "schema_version": 2,
+      "position_unit": "m",
+      "velocity_unit": "m/s",
+      "mass_unit": "kg",
+      "time_unit": "s",
+      "angle_unit": "rad unless field ends _deg",
+      "translation_frame": "EARTH_CENTERED_INERTIAL",
+      "relative_frame": "R_V_H",
+      "orbital_geometry": "FIXED_XZ_POLAR",
+      "epoch_utc": "UNSPECIFIED",
+      "epoch_policy": "RELATIVE_TIME_WITH_EXPLICIT_EARTH_ANGLE",
+      "propulsion_provenance": "PROJECT_ASSUMPTION_NOT_REFERENCE_VEHICLE",
+      "attitude_policy": "IDENTITY_PLACEHOLDER_NOT_PROPAGATED"
+    },
+    "position_eci_m": [
+      -3.1499717064899672E+6,
+      0,
+      5.6836135265411641E+6
+    ],
+    "velocity_eci_m_s": [
+      -6857.1149321293178,
+      0,
+      -3972.4065431243143
+    ],
+    "mass_kg": 1817.9936891054278,
+    "altitude_spherical_m": 120000,
+    "speed_inertial_m_s": 7924.6475591213339,
+    "fpa_inertial_deg": -1.0881200784310889,
+    "velocity_air_relative_m_s": [
+      -6857.1149321293178,
+      229.69958765445625,
+      -3972.4065431243143
+    ],
+    "speed_air_relative_m_s": 7927.9758347800444,
+    "fpa_air_relative_deg": -1.0876632154398707
+  },
+  "hybrid_phase2_error_m": 0.0007109938472974446,
+  "hybrid_phase2_delta_v_m_s": 64.891782444289134,
+  "hybrid_interface_preserved": true,
+  "matlab_version": "25.1.0.2973910 (R2025a) Update 1"
+}

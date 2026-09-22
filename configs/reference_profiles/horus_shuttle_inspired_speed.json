@@ -1,0 +1,9 @@
+{
+  "source": "User-supplied plot codex-clipboard-80cb3480-a4f6-4fbd-8474-0cfb13919246.png; selected 2026-09-21",
+  "classification": "USER_SUPPLIED_SHUTTLE_INSPIRED_ASSUMPTION_NOT_PUBLISHED_HORUS_OR_SHUTTLE_FLIGHT_DATA",
+  "air_speed_m_s": [800, 2000, 5000, 7200],
+  "aoa_deg": [15, 15, 40, 40],
+  "interpretation": "Velocity interpreted as atmosphere-relative speed magnitude. Breakpoints 2000 and 5000 m/s, 15 and 40 deg transcribed from graph. Plot edges approximately 800 and 7200 m/s; endpoint holding outside them is explicit.",
+  "interpolation": "PIECEWISE_LINEAR_WITH_HOLD_ENDPOINT",
+  "limitations": "Prescribed AoA command only; no trim, bank guidance, or extension of aerodynamic Mach/AoA validity."
+}

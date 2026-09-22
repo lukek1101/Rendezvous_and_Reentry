@@ -129,3 +129,120 @@ Coverage is predominantly regression/internal consistency. Missing acceptance ev
 | 8 | Establish bounded regression gate; depends on 1–7 | Fast core/IO checks plus pinned legacy and hybrid mission tests; selected failure/epoch/mass tests included explicitly. Optimization requires a named objective, parameter bounds, evaluation/time cap, matching model and saved convergence status; no unbounded reoptimization in routine tests |
 
 Migration is ready for planning from this baseline, not for claims of higher physical fidelity. No new feature or model correction was implemented by this audit.
+
+## 8. Reference-case research stage (2026-09-21)
+
+Added [the source-backed reference comparison](REFERENCE_VEHICLE_RESEARCH_2026-09-21.md) and its source manifest. This stage changes documentation only; the execution paths, defaults, archived outputs and baseline above remain unchanged. HORUS-2B is recommended for published-model entry reproduction, ARD for subsequent capsule flight comparison, with Apollo AS-202 retained as an alternative. Analytical circular-orbit relative motion and the HTV-2 operational sequence are separate orbital benchmarks.
+
+Verification: reviewed primary full texts, checked geometry/area/mass/entry definitions and selected tables/figures, distinguished preflight, flight reconstruction and shock-tunnel data, and checked derived unit/geometry values. The user supplied both previously inaccessible ARD articles. The 2007 ARD chapter resolves entry mass, reference-area definition and relative entry speed/FPA; it still does not provide a complete general-purpose aerodynamic table or executable flight guidance. Its internal timing discrepancy and differences from the ESA overview are retained. No new simulator execution or expensive optimization was needed for documentation-only research; no new vehicle validation is claimed.
+
+Remaining limitations: source curves are not yet digitized, complete flight state/control histories are absent, HORUS trim and missing-grid/domain policy need selection, and ARD references R1/R5 have been requested but not obtained. Next dependency: freeze a source-complete, versioned case definition and its model-reproduction versus flight-validation objective, then satisfy checklist steps 2–4 above before implementing a vehicle adapter. Reuse the validated core packages and preserve this baseline when implementation is separately authorized.
+
+User follow-up: R1/R5 could not be located; simplified aerodynamic models may be considered. The reference comparison now includes constant/effective and trajectory-specific ARD surrogate options, their limitations and acceptance criteria. Missing full tables block exact/general database reproduction, not a clearly labeled bounded surrogate study. No surrogate coefficients were selected or implemented.
+
+## 9. Configuration/reference/interface implementation stage
+
+The user selected both HORUS-2B (spaceplane) and ARD (capsule). The [implementation record](REFERENCE_MIGRATION_2026-09-21.md) supersedes the configuration/entry-interface descriptions above where noted; the original audit remains historical evidence.
+
+Changed: removed the four active old spaceplane definitions; added explicit reference presets with source/domain metadata, a clean untrimmed HORUS table and a narrowly bounded ARD hypersonic surrogate. Retained the former capsule and default paper spaceplane under explicit legacy names. Separated user overrides from presets, stopped JSON from altering physical configuration, disabled implicit environment overrides, and added compatibility rejection plus content-pinned legacy replay. Missing custom manoeuvre inputs and stale deorbit ignition states now error. Phase records declare frames/units/epoch/mass, and integrated entry receives the actual descending terminal event; requested and achieved FPA are separate. Standalone studies may still prescribe entry conditions.
+
+Verified: source table/geometry checks, missing-data/domain failures, interpolation and force conversion, coordinate and override checks, two short reference propagations with timestep refinement, existing MATLAB aggregate suite, six Python IO tests and one pinned hybrid replay. The hybrid preserved the deorbit endpoint exactly; requested −1.16° and achieved −1.088120078° inertial FPA remain different, as intended. Evidence and replay settings are in [migration_stage_2026-09-21](migration_stage_2026-09-21/); earlier baseline artifacts were not rewritten. No optimization or new guidance was introduced.
+
+Limitations/next dependency: reference domains do not cover full descents; HORUS trim/high-Mach completion and ARD predictive aero/guidance remain unresolved. Reference wet/entry mass and mission epoch/plane need a mission-specific definition. Existing Python exporters are still legacy and cannot truthfully emit the new compatibility contract until their physics is aligned and independently checked. Full reference mission replacement is not yet verified; retain legacy presets and qualify those data/contracts before expanding the envelope.
+
+## 10. Reference AoA fallback stage
+
+The user's exploratory fallback policy is implemented using the newly supplied
+ARD and HORUS sources. See [profile record](REFERENCE_PROFILES_2026-09-21.md).
+ARD mean AoA is digitized with separate nonuniform altitude/Mach tick mappings;
+HORUS uses the book's entry-time command. The ARD CFD table is separately
+transcribed, and the newer HORUS aero-table completions are reviewed but not
+silently substituted. Explicit user profiles/constants take precedence.
+Elapsed time reaches integration stages and event refinement; actual AoA and
+endpoint holding are recorded. Integrated entry state/FPA remain propagated.
+
+Verified: image/table transcription checks, precedence and domain errors,
+compatibility changes, a20 s changing-AoA comparison (RK4/ODE45 final-position
+difference5.01e−8 m), and the full MATLAB aggregate regression suite. No
+optimization, new bank guidance or independent flight validation was performed.
+Source hashes, calibration scripts, plots and results are retained in
+`profile_stage_2026-09-21`. Earlier baselines and unrelated changes are preserved.
+
+Next dependency: define bounded HORUS trim/high-Mach and ARD lower-Mach force
+extensions with source/assumption distinctions and uncertainty, then qualify
+complete entry trajectories. AoA history availability alone does not satisfy
+that acceptance criterion.
+
+## 11. Bounded nominal orbital planning
+
+Added an analytical Hohmann departure/wait seed with limited in-plane terminal
+correction and the existing arrival impulse to match explicit LVLH velocity.
+`Run_Nominal_Orbit` executes this path and existing Phase2, then stops. The
+old grid/custom/Python paths remain available. No new architecture, extra
+correction manoeuvre or guidance law was added. Integration tolerances,
+targeting criteria and optional optimizer stopping conditions are distinct;
+numerical noncompletion is separate from demonstrated bound violations.
+
+Verified two300→500 km initial-phase cases, explicit work/burn limits,
+rocket-equation accounting and integration refinement. Both nominal cases
+met0.5 m /0.001 m/s in1.1–1.5 s. The normal-resolution bounded grid missed the
+handoff; historical parameters only passed the original phase case. Both
+fresh Python attempts hit90 s budgets with no returned candidate. Existing
+MATLAB aggregate checks passed. See [benchmark and migration details](NOMINAL_ORBIT_PLANNING_2026-09-21.md)
+and `nominal_stage_2026-09-21` artifacts. No optimality is claimed.
+
+Next dependency: qualify MATLAB–Python propagation/export parity before
+optional cost refinement; retain existing vehicle-envelope dependencies for
+full mission verification.
+
+## 12. Bounded disturbed-execution correction
+
+Added opt-in seeded ECI initial errors and burn gain/pointing errors, with
+PERFECT_INSTANTANEOUS state knowledge explicitly required. The actual initial
+state and each applied impulse are propagated without resets. Two fractional
+transfer opportunities retarget position; the existing arrival burn is
+retargeted, followed by at most one bounded zero-latency velocity cleanup.
+Count, individual/cumulative correction delta-V, nominal-burn capability,
+propellant, remaining mass, elapsed time and numerical work are bounded.
+Applied-error bound violations retain delivered state/fuel rather than undoing
+the burn. Every burn has a pre/post-state and resource ledger.
+
+Four identical off/on disturbance pairs at90°/60° initial phase and seeds42/7
+missed by1.25–3.37 km without correction and met0.5 m /0.001 m/s with it,
+using three added impulses and0.72–1.67 m/s correction delta-V. The original
+handoff epochs and budgets suffice; no additional phasing leg was required
+for these cases or implemented. This does not establish a general disturbance
+envelope. Numerical limit failures remain separate from candidate violations.
+
+Verified paired draws/RNG isolation, full delivered delta-V/fuel accounting,
+state continuity, count/resource/time/work limits, zero-error behavior and
+integration refinement. MATLAB aggregate regressions and the corrected
+public-runner Phase2 case passed. See [stage details](ORBIT_CORRECTION_2026-09-21.md)
+and `correction_stage_2026-09-21` evidence. Next dependency: credible navigation,
+latency and actuator/propellant assumptions before expanding cases or deciding
+whether a specifically configured additional phasing leg is necessary.
+
+## 13. Signed-axis proximity generalization
+
+Hybrid proximity now selects+R/−R/+V/−V sides using explicit target R/V/H
+conventions. Acquisition, hold, quintic approach, corridor and standoff
+geometry are parameterized. Closing impulses and physical-frame CW
+gravity-gradient/Coriolis feedforward are recomputed per direction rather
+than rotating an R-bar solution. Actual upstream states and the existing
+ideal-force/impulse assumptions are retained; no docking-contact model.
+
+The matched four-mode comparison preserves the old−R state history/cost
+within regression tolerance and reaches standoff in every mode. Candidate
+times, limits, range requirements and controlled-segment timings are matched;
+selected closing time differs (4500 s R,5400 s V) and is reported. All runs
+have zero recorded controlled-approach violations/saturation. Metrics include
+total delta-V/duration, peak requested/delivered controlled force, tracking,
+terminal errors and geometric margins. Partial controlled failures retain
+their actual histories/violation flags and inhibit downstream execution.
+
+Verified full MATLAB regressions, all-axis reruns, wrong-side and force-limited
+counterexamples, budget closure, canonical terminal-range configuration, and
+a+V public-runner case with the actual disturbed/corrected upstream state.
+See [approach record](PROXIMITY_APPROACH_MODES_2026-09-21.md) and
+`approach_stage_2026-09-21`. Next dependency is broader matched upstream-state
+and convergence coverage; actuator/navigation realism remains separate.

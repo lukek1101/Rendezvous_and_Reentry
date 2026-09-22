@@ -3,7 +3,7 @@ function plan = plan_closing(y, sys, a)
 % CW seed, nonlinear differential correction, sampled nonlinear constraints.
     [r,v,C] = orbit_core.relative_state(y(1:6),y(7:12));
     n = norm(cross(y(7:9),y(10:12)))/norm(y(7:9))^2;
-    goal = [-a.insertion_range_m;0;0];
+    goal = mission.approach_axis(a.approach_mode)*a.insertion_range_m;
     count = numel(a.transfer_times_s);
     row = struct('duration_s',0,'delta_v_m_s',inf,'position_error_m',inf, ...
         'min_range_m',NaN,'max_speed_m_s',NaN,'feasible',false,'reason',"", ...
@@ -46,6 +46,7 @@ function plan = plan_closing(y, sys, a)
             candidates(k).feasible = norm(rf-goal)<0.05 && ...
                 min(ranges)>=a.closing_min_range_m && max(speeds)<=a.max_closing_speed_m_s;
             candidates(k).reason = "sampled constraints failed";
+            if norm(rf-goal)>=0.05, candidates(k).reason="terminal targeting did not converge"; end
             if candidates(k).feasible
                 candidates(k).reason = "feasible";
             end

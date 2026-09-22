@@ -1,4 +1,5 @@
-function [X_cross, t_cross] = refine_speed_crossing(X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, target_speed, dt_window)
+function [X_cross, t_cross] = refine_speed_crossing(X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, target_speed, dt_window, entry_time_s)
+    if nargin<10, entry_time_s=0; end
 %REFINE_SPEED_CROSSING Refine a bracketed downward relative-speed crossing.
     validateattributes(dt_window, {'numeric'}, ...
         {'real','scalar','finite','positive'}, mfilename, 'dt_window');
@@ -13,11 +14,11 @@ function [X_cross, t_cross] = refine_speed_crossing(X0, sys, shape, aoa_deg, ban
     lo = 0;
     hi = dt_window;
     aux_lo = reentry_core.evaluate_state( ...
-        X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k);
+        X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, entry_time_s);
     X_cross = reentry_core.rk4_step( ...
-        X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, hi);
+        X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, hi, entry_time_s);
     aux_hi = reentry_core.evaluate_state( ...
-        X_cross, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k);
+        X_cross, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, entry_time_s+hi);
     tolerance = 1e-9;
     if abs(aux_lo.speed_rel-target_speed) <= tolerance
         X_cross = X0;
@@ -33,9 +34,9 @@ function [X_cross, t_cross] = refine_speed_crossing(X0, sys, shape, aoa_deg, ban
     for iter = 1:50
         mid = 0.5 * (lo + hi);
         X_mid = reentry_core.rk4_step( ...
-            X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, mid);
+            X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, mid, entry_time_s);
         aux_mid = reentry_core.evaluate_state( ...
-            X_mid, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k);
+            X_mid, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, entry_time_s+mid);
 
         if aux_mid.speed_rel > target_speed
             lo = mid;

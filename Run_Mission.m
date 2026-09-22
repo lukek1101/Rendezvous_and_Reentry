@@ -13,8 +13,15 @@ function result = Run_Mission(overrides, options)
     if nargin < 2
         options = struct();
     end
+    preset="APOLLO7_PREFLIGHT_TRIM";
+    if isfield(overrides,'reentry') && isfield(overrides.reentry,'vehicle_mode') && ...
+            upper(string(overrides.reentry.vehicle_mode))=="SPACEPLANE"
+        preset="HORUS_2B";
+    end
+    if isfield(options,'preset'), preset=string(options.preset); end
+    raw_options=options;
     defaults = struct('plot', false, 'verbose', true, 'seed', [], 'stop_after_proximity',false, ...
-        'system', Mission_Config());
+        'preset',preset,'system', Mission_Config(preset));
     options = mission.merge_settings(defaults, options, 'options');
     validateattributes(options.plot, {'logical'}, {'scalar'}, mfilename, 'options.plot');
     validateattributes(options.verbose, {'logical'}, {'scalar'}, mfilename, 'options.verbose');
@@ -39,6 +46,8 @@ function result = Run_Mission(overrides, options)
         result.log = evalc('cfg = mission.configure(options.system, overrides); result = mission.run(cfg,options.stop_after_proximity);');
     end
     result.metadata.schema_version = 1;
+    result.metadata.provenance=struct('preset',preset,'run_overrides',overrides, ...
+        'options_supplied',raw_options,'precedence',"PRESET < SYSTEM_OVERRIDES < RUN_OVERRIDES < ENABLED_ENVIRONMENT; JSON_MANEUVER_ONLY");
     result.metadata.elapsed_seconds = toc(timer);
     result.metadata.matlab_version = version;
     result.metadata.initial_rng = initial_rng;

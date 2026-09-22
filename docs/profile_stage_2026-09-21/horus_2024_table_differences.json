@@ -1,0 +1,20 @@
+{
+  "source": "Mooij, Re-entry Systems 2024, Appendix B, p1496 Tables B.7/B.8",
+  "comparison": "M-692 clean CD/CL tables: 11 previously blank cells are populated in the 2024 book; other coefficients match",
+  "status": "REVIEWED_PUBLISHED_COMPLETION_NOT_ACTIVATED_NOT_NEW_MEASUREMENTS",
+  "reference_area_m2": 110,
+  "maximum_mach": 20,
+  "cells": [
+    {"coefficient":"CD","mach":1.2,"alpha_deg":35,"value":1.08},
+    {"coefficient":"CD","mach":1.2,"alpha_deg":40,"value":1.08},
+    {"coefficient":"CD","mach":1.2,"alpha_deg":45,"value":1.08},
+    {"coefficient":"CD","mach":1.5,"alpha_deg":45,"value":1.32},
+    {"coefficient":"CL","mach":1.2,"alpha_deg":25,"value":1.17},
+    {"coefficient":"CL","mach":1.2,"alpha_deg":30,"value":1.17},
+    {"coefficient":"CL","mach":1.2,"alpha_deg":35,"value":1.17},
+    {"coefficient":"CL","mach":1.2,"alpha_deg":40,"value":1.17},
+    {"coefficient":"CL","mach":1.2,"alpha_deg":45,"value":1.17},
+    {"coefficient":"CL","mach":1.5,"alpha_deg":40,"value":1.38},
+    {"coefficient":"CL","mach":1.5,"alpha_deg":45,"value":1.38}
+  ]
+}

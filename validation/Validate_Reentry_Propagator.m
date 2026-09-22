@@ -7,7 +7,7 @@ function results = Validate_Reentry_Propagator()
     project_root = fileparts(fileparts(mfilename('fullpath')));
     addpath(project_root);
 
-    sys = Mission_Config();
+    sys = Legacy_Baseline_System();
     % Pin the test vehicle independently of the user's mission selection.
     sys.reentry_vehicle.vehicle_mode = "SPACEPLANE";
     X0 = synthetic_entry_state_local(sys);

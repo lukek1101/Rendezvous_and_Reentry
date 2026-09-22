@@ -10,7 +10,7 @@ function [X_chaser, X_target, dV_used, fuel_used, hist, info] = deorbit(sys, X_c
     info = struct();
 
     if should_use_drag_deorbit_design(sys, custom_params)
-        design = load_drag_deorbit_design(custom_params, sys);
+        design = load_drag_deorbit_design(custom_params, sys, X_chaser);
         dV_entry = design.delta_v_m_s;
 
         fprintf('   HOHMANN drag-aware deorbit: %s retrograde %.3f m/s from Python design...\n', ...
@@ -331,7 +331,7 @@ function tf = should_use_drag_deorbit_design(sys, custom_params)
     tf = ~(mode == "OFF" || mode == "NONE" || mode == "DISABLED");
 end
 
-function design = load_drag_deorbit_design(custom_params, sys)
+function design = load_drag_deorbit_design(custom_params, sys, ignition_state)
     manual_dv = get_phase3_param(custom_params, 'drag_deorbit_delta_v_m_s', []);
     if ~isempty(manual_dv)
         design = struct();
@@ -362,6 +362,14 @@ function design = load_drag_deorbit_design(custom_params, sys)
     end
 
     cfg = jsondecode(fileread(design_path));
+    if ~isfield(cfg,'ignition_state_eci_si') || ...
+            ~isequal(cfg.ignition_state_eci_si(:),ignition_state(:))
+        error('mission:StaleDeorbitDesign','Offline deorbit design lacks the exact propagated ignition state/mass. Use a compatible new design or explicit manual delta-V.');
+    end
+    strict=Mission_Run_Config(sys);
+    expected=get_phase3_param(custom_params,'compatibility',mission.physics_contract(sys,strict));
+    mission.validate_optimizer_compatibility(cfg,expected,strict,sys.reference.preset);
+
     if ~get_json_bool(cfg, {'phase3','drag_deorbit','enabled'}, false)
         error('Drag-aware deorbit design JSON is not enabled: %s', char(design_path));
     end

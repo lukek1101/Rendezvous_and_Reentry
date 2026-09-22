@@ -62,3 +62,9 @@ Desktop.ini
 # Random Backups
 # =========================
 GPT_conversation_backups/
+
+
+# =========================
+# Too Large and Irrelevant
+# =========================
+tmp/

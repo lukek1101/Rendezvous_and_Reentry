@@ -7,7 +7,8 @@ function results = Validate_Mission_Architecture()
     caller_dir = pwd;
     caller_rng = rng;
     cleanup = onCleanup(@() restore_caller(caller_dir, caller_rng));
-    options = struct('verbose',false,'seed',123);
+    options = struct('verbose',false,'seed',123,'preset',"LEGACY_CAPSULE_60KG");
+    overrides.python_config.allow_legacy_replay=true;
     options.system = struct('mu',3.986004418e14,'Re',6378137,'J2',1.08263e-3, ...
         'g0',9.80665,'Isp',200,'Target_Mass',2000,'Chaser_Mass_Init',2000, ...
         'h_insert',300e3,'h_target',500e3,'initial_chaser_angle_deg',0,'initial_phase_angle_deg',90);
@@ -21,7 +22,9 @@ function results = Validate_Mission_Architecture()
     overrides.reentry.capsule.mass_kg = 60;
     overrides.reentry.capsule.add_to_chaser_initial_mass = true;
     overrides.reentry.capsule.separation_mode = "ENTRY_INTERFACE";
-    overrides.reentry.capsule.use_paper_entry_conditions = true;
+    overrides.reentry.capsule.use_paper_entry_conditions = false;
+    overrides.phase3.flight_path_angle_deg=1.16;
+    overrides.phase3.entry_interface_altitude_km=120;
     overrides.reentry.capsule.altitude_termination_enabled = false;
     overrides.phase2 = struct('dt_s',1,'S2_m',[0;-5000;0],'S4_R_abs_m',30, ...
         'initial_S2_tol_m',50,'tof_initial_s2_s',1200,'delta_R_cycloid_m',400, ...

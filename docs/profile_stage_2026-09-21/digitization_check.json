@@ -1,0 +1,14 @@
+{
+  "comparison": "Piecewise-linear 1 s samples versus every red-curve pixel-column median in same raster; reconstruction check, not independent flight validation",
+  "sample_count": 671,
+  "rms_aoa_deg": 0.03567063235155658,
+  "max_abs_aoa_deg": 0.30040436392759773,
+  "alpha_range_deg": [
+    15.73,
+    24.53
+  ],
+  "altitude_range_m": [
+    18057,
+    79745
+  ]
+}

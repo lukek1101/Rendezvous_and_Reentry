@@ -46,6 +46,8 @@ function cfg = load_optimizer_config(sys, run_cfg)
     end
 
     cfg = jsondecode(fileread(config_path));
+    cfg.import_record=struct('path',config_path,'sha256',mission.file_sha256(config_path), ...
+        'selection',selection_msg);
     fprintf('Loaded mission JSON config: %s (%s)\n', char(config_path), char(selection_msg));
     if has_json_path(cfg, {'archive','case_id'})
         fprintf('   config case_id: %s\n', char(get_json_string(cfg, {'archive','case_id'}, "")));

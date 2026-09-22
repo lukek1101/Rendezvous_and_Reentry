@@ -1,10 +1,26 @@
 function validate_configuration(cfg)
 %VALIDATE_CONFIGURATION Reject invalid loop bounds before running any phase.
     sys = cfg.system;
+    if sys.inc~=pi/2
+        error('mission:UnsupportedOrbitalPlane','Current initializer is fixed X-Z polar; inclination overrides cannot be silently ignored.');
+    end
+    expected=["APOLLO7_PREFLIGHT_TRIM","ARD"];
+    if sys.reentry_vehicle.vehicle_mode=="SPACEPLANE", expected="HORUS_2B"; end
+    if ~any(sys.reference.preset==expected) && ~startsWith(sys.reference.preset,"LEGACY_")
+        error('mission:PresetModeMismatch','Select the matching reference preset before applying overrides.');
+    end
+    validateattributes(sys.reentry_flight_path_angle,{'numeric'},{'scalar','finite','real','nonzero','>',-pi/2,'<',pi/2});
     for name = {'mu','Re','g0','Isp','Target_Mass','Chaser_Mass_Init'}
         positive(sys.(name{1}), ['system.' name{1}]);
     end
     p1 = cfg.phase1;
+    validateattributes(p1.correction.enabled,{'logical'},{'scalar'});
+    if p1.correction.enabled && (cfg.phase1_mode~="HOHMANN" || p1.hohmann_method~="NOMINAL_TARGET")
+        error('mission:CorrectionScope','Bounded corrections require the nominal Hohmann path.');
+    end
+    if ~any(string(p1.hohmann_method)==["NOMINAL_TARGET","GRID_SEARCH"])
+        error('mission:NominalMethod','Use NOMINAL_TARGET or GRID_SEARCH.');
+    end
     for name = {'time_step','dt_phase','dt_capture','max_wait','max_capture_time', ...
                 'event_time_tol','phase_tol'}
         positive(p1.(name{1}), ['phase1.' name{1}]);
@@ -14,8 +30,13 @@ function validate_configuration(cfg)
         error('mission:InvalidProximityMode','Unknown Phase 2 execution mode.');
     end
     a = p2.autonomous;
+    mission.approach_axis(a.approach_mode);
+    if p2.mode=="LEGACY_IMPULSIVE" && string(a.approach_mode)~="-R"
+        error('mission:ApproachMode','Signed-axis approaches require HYBRID_AUTONOMOUS.');
+    end
     names = fieldnames(a);
     for j = 1:numel(names)
+        if strcmp(names{j},'approach_mode'), continue; end
         value = a.(names{j});
         validateattributes(value, {'numeric'}, {'real','finite','nonempty','nonnegative'}, ...
             mfilename, ['phase2.autonomous.' names{j}]);

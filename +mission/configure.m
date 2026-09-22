@@ -4,7 +4,7 @@ function cfg = configure(sys, overrides)
 run_cfg = mission.merge_settings(Mission_Run_Config(sys), overrides);
 sys = apply_run_config_to_sys(sys, run_cfg);
 mission_cfg = mission.load_optimizer_config(sys, run_cfg);
-sys = apply_json_to_sys(sys, mission_cfg);
+% Optimizer artifacts supply manoeuvre candidates, never physical authority.
 sys = apply_run_config_to_sys(sys, run_cfg);
 sys = apply_environment_env_overrides(sys, run_cfg);
 sys = refresh_derived_sys(sys);
@@ -63,15 +63,27 @@ phasing_mode = "CUSTOM_IMPULSE";
 [phasing_mode, custom_params] = apply_json_to_phase1(phasing_mode, custom_params, mission_cfg);
 [phasing_mode, custom_params] = apply_run_config_to_phase1(phasing_mode, custom_params, run_cfg);
 [phasing_mode, custom_params] = apply_phase1_env_overrides(phasing_mode, custom_params, run_cfg);
+if ~isempty(fieldnames(mission_cfg)) && phasing_mode=="CUSTOM_IMPULSE" && ...
+        (~has_json_path(mission_cfg,{'phase1','delta_v_m_s'}) || ...
+        ~(has_json_path(mission_cfg,{'phase1','phase_angle_deg'}) || has_json_path(mission_cfg,{'phase1','phase_angle_rad'})) || ...
+        ~(has_json_path(mission_cfg,{'phase1','gamma_deg'}) || has_json_path(mission_cfg,{'phase1','gamma_rad'})))
+    error('mission:IncompleteManeuverDesign','Optimizer artifact lacks explicit custom manoeuvre parameters.');
+end
+if isempty(fieldnames(mission_cfg)) && phasing_mode=="CUSTOM_IMPULSE" && ...
+        (~has_nonempty_run_value(overrides,{'phase1','delta_v_m_s'}) || ...
+        ~(has_nonempty_run_value(overrides,{'phase1','phase_angle_deg'}) || has_nonempty_run_value(overrides,{'phase1','phase_angle_rad'})) || ...
+        ~(has_nonempty_run_value(overrides,{'phase1','gamma_deg'}) || has_nonempty_run_value(overrides,{'phase1','gamma_rad'})))
+    error('mission:MissingManeuverDesign','CUSTOM_IMPULSE without an archive requires explicit phase angle, delta-V and gamma. Historical fallback numbers are not a new design.');
+end
 
 
 p2 = default_phase2_config();
-p2 = apply_json_to_phase2(p2, mission_cfg);
+% Phase 2 settings are local configuration, not Python authority.
 p2 = apply_run_config_to_phase2(p2, run_cfg);
 p2.mode = upper(string(run_cfg.phase2.mode));
 p2.autonomous = run_cfg.phase2.autonomous;
 p3 = default_phase3_config();
-p3 = apply_json_to_phase3(p3, mission_cfg);
+% Phase 3 settings are local configuration, not Python authority.
 p3 = apply_run_config_to_phase3(p3, run_cfg);
 p3.apogee_burns = run_cfg.phase3.apogee_burns;
 p3 = apply_phase3_env_overrides(p3, run_cfg);
@@ -82,10 +94,16 @@ cfg = struct('system', sys_orbit, 'proximity_system', sys, ...
     'run', run_cfg, 'optimizer', mission_cfg, 'phase1_mode', phasing_mode, ...
     'phase1', custom_params, 'phase2', p2, 'phase3', p3, ...
     'deorbit', apply_phase3_config_to_params(custom_params, p3));
+cfg.provenance=struct('reference',sys.reference,'run_overrides',overrides, ...
+    'environment_enabled',run_cfg.runtime.allow_environment_overrides);
+cfg.contract=mission.physics_contract(sys_orbit,run_cfg);
+cfg.deorbit.compatibility=cfg.contract;
+mission.validate_optimizer_compatibility(mission_cfg,cfg.contract,run_cfg,sys.reference.preset);
 mission.validate_configuration(cfg);
 end
 
 function sys = apply_run_config_to_sys(sys, run_cfg)
+    sys.reentry_vehicle.aoa_profile=run_cfg.reentry.aoa_profile;
     sys.h_entry_interface = get_run_number_field(run_cfg, {'phase3','entry_interface_altitude_km'}, sys.h_entry_interface/1e3) * 1e3;
     sys.reentry_flight_path_angle = deg2rad(get_run_number_field(run_cfg, {'phase3','flight_path_angle_deg'}, rad2deg(sys.reentry_flight_path_angle)));
 
@@ -128,10 +146,8 @@ function sys = apply_run_config_to_sys(sys, run_cfg)
     sys.reentry_vehicle.uncertainty.density_scale = get_run_number_field(run_cfg, {'reentry','uncertainty','density_scale'}, sys.reentry_vehicle.uncertainty.density_scale);
     sys.reentry_vehicle.uncertainty.cd_scale = get_run_number_field(run_cfg, {'reentry','uncertainty','cd_scale'}, sys.reentry_vehicle.uncertainty.cd_scale);
     sys.reentry_vehicle.uncertainty.ld_scale = get_run_number_field(run_cfg, {'reentry','uncertainty','ld_scale'}, sys.reentry_vehicle.uncertainty.ld_scale);
-    if upper(string(sys.reentry_vehicle.vehicle_mode)) == "CAPSULE" && ...
-            sys.reentry_vehicle.capsule.use_paper_entry_conditions
-        sys.h_entry_interface = sys.reentry_vehicle.capsule.entry_interface_altitude_m;
-        sys.reentry_flight_path_angle = deg2rad(abs(sys.reentry_vehicle.capsule.reference_entry_fpa_deg));
+    if sys.reentry_vehicle.capsule.use_paper_entry_conditions
+        error('mission:PrescribedIntegratedEntry','Paper entry conditions belong to standalone studies. Set explicit deorbit targets instead.');
     end
 
     if has_run_path(run_cfg, {'environment','atmospheric_drag'})
@@ -154,6 +170,9 @@ function sys = refresh_derived_sys(sys)
 end
 
 function [phasing_mode, custom_params] = apply_run_config_to_phase1(phasing_mode, custom_params, run_cfg)
+    custom_params.hohmann_method=run_cfg.phase1.hohmann_method;
+    custom_params.nominal=run_cfg.phase1.nominal;
+    custom_params.correction=run_cfg.phase1.correction;
     phasing_mode = get_run_string_field(run_cfg, {'phase1','mode'}, phasing_mode);
     custom_params.burn_model = get_run_string_field(run_cfg, {'maneuver','burn_model'}, custom_params.burn_model);
     custom_params.finite_burn_thrust = get_run_number_field(run_cfg, {'maneuver','finite_burn_thrust_N'}, custom_params.finite_burn_thrust);
@@ -225,32 +244,11 @@ function p2 = default_phase2_config()
     p2.Isp_fallback_s = 220;
 end
 
-function p2 = apply_json_to_phase2(p2, cfg)
-    if isempty(fieldnames(cfg)) || ~isfield(cfg, 'phase2')
-        return;
-    end
-
-    p2.dt = get_json_number(cfg, {'phase2','dt_s'}, p2.dt);
-    p2.S2 = get_json_vector(cfg, {'phase2','S2_m'}, p2.S2);
-    p2.S4_R_abs = get_json_number(cfg, {'phase2','S4_R_abs_m'}, p2.S4_R_abs);
-    p2.initial_S2_tol = get_json_number(cfg, {'phase2','initial_S2_tol_m'}, p2.initial_S2_tol);
-    p2.tof_initial_s2 = get_json_number(cfg, {'phase2','tof_initial_s2_s'}, p2.tof_initial_s2);
-    p2.delta_R_cycloid = get_json_number(cfg, {'phase2','delta_R_cycloid_m'}, p2.delta_R_cycloid);
-    p2.vbar_burn_sign = get_json_number(cfg, {'phase2','vbar_burn_sign'}, p2.vbar_burn_sign);
-    p2.vbar_cross_tol = get_json_number(cfg, {'phase2','vbar_cross_tol_m'}, p2.vbar_cross_tol);
-    p2.max_cycloid_orbits = get_json_number(cfg, {'phase2','max_cycloid_orbits'}, p2.max_cycloid_orbits);
-    p2.rbar_hop_count = get_json_number(cfg, {'phase2','rbar_hop_count'}, p2.rbar_hop_count);
-    p2.tof_hop = get_json_number(cfg, {'phase2','tof_hop_s'}, p2.tof_hop);
-    p2.capture_pos_tol = get_json_number(cfg, {'phase2','capture_pos_tol_m'}, p2.capture_pos_tol);
-    p2.max_terminal_refines = get_json_number(cfg, {'phase2','max_terminal_refines'}, p2.max_terminal_refines);
-    p2.tof_terminal_refine = get_json_number(cfg, {'phase2','tof_terminal_refine_s'}, p2.tof_terminal_refine);
-    p2.Isp_fallback_s = get_json_number(cfg, {'phase2','Isp_fallback_s'}, p2.Isp_fallback_s);
-end
-
 function p2 = apply_run_config_to_phase2(p2, run_cfg)
     p2.dt = get_run_number_field(run_cfg, {'phase2','dt_s'}, p2.dt);
     p2.S2 = get_run_vector_field(run_cfg, {'phase2','S2_m'}, p2.S2);
     p2.S4_R_abs = get_run_number_field(run_cfg, {'phase2','S4_R_abs_m'}, p2.S4_R_abs);
+    p2.S4_R_abs = get_run_number_field(run_cfg, {'phase2','terminal_standoff_m'}, p2.S4_R_abs);
     p2.initial_S2_tol = get_run_number_field(run_cfg, {'phase2','initial_S2_tol_m'}, p2.initial_S2_tol);
     p2.tof_initial_s2 = get_run_number_field(run_cfg, {'phase2','tof_initial_s2_s'}, p2.tof_initial_s2);
     p2.delta_R_cycloid = get_run_number_field(run_cfg, {'phase2','delta_R_cycloid_m'}, p2.delta_R_cycloid);
@@ -274,19 +272,6 @@ function phase3_cfg = default_phase3_config()
     phase3_cfg.drag_deorbit_design_file = "configs/latest_drag_deorbit_solution.json";
     phase3_cfg.drag_deorbit_delta_v_m_s = [];
     phase3_cfg.drag_deorbit_max_coast_time_s = [];
-end
-
-function phase3_cfg = apply_json_to_phase3(phase3_cfg, cfg)
-    if isempty(fieldnames(cfg))
-        return;
-    end
-
-    phase3_cfg.mode = get_json_string(cfg, {'phase3','mode'}, phase3_cfg.mode);
-    phase3_cfg.mode = get_json_string(cfg, {'reentry','phase3_mode'}, phase3_cfg.mode);
-    phase3_cfg.dt_reentry_coast_s = get_json_number(cfg, {'phase3','dt_reentry_coast_s'}, phase3_cfg.dt_reentry_coast_s);
-    phase3_cfg.max_reentry_coast_time_s = get_json_number(cfg, {'phase3','max_reentry_coast_time_s'}, phase3_cfg.max_reentry_coast_time_s);
-    phase3_cfg.drag_deorbit_delta_v_m_s = get_json_number(cfg, {'phase3','drag_deorbit','delta_v_m_s'}, phase3_cfg.drag_deorbit_delta_v_m_s);
-    phase3_cfg.drag_deorbit_max_coast_time_s = get_json_number(cfg, {'phase3','drag_deorbit','max_coast_time_s'}, phase3_cfg.drag_deorbit_max_coast_time_s);
 end
 
 function phase3_cfg = apply_run_config_to_phase3(phase3_cfg, run_cfg)
@@ -345,74 +330,6 @@ function vec = get_run_vector_field(s, path, default_value)
     vec = vec(:);
     if numel(vec) ~= numel(default_value) || ~isnumeric(vec) || any(~isfinite(vec))
         vec = default_value(:);
-    end
-end
-
-function sys = apply_json_to_sys(sys, cfg)
-    if isempty(fieldnames(cfg))
-        return;
-    end
-
-    sys.h_entry_interface = get_json_number(cfg, {'phase3','entry_interface_altitude_km'}, sys.h_entry_interface/1e3) * 1e3;
-    sys.h_entry_interface = get_json_number(cfg, {'reentry','entry_interface_altitude_km'}, sys.h_entry_interface/1e3) * 1e3;
-    sys.reentry_flight_path_angle = deg2rad(get_json_number(cfg, {'phase3','flight_path_angle_deg'}, rad2deg(sys.reentry_flight_path_angle)));
-    sys.reentry_flight_path_angle = deg2rad(get_json_number(cfg, {'reentry','flight_path_angle_deg'}, rad2deg(sys.reentry_flight_path_angle)));
-
-    sys.Chaser_Mass_Init = get_json_number(cfg, {'maneuver','initial_mass_kg'}, sys.Chaser_Mass_Init);
-
-    sys.maneuver.default_burn_model = get_json_string(cfg, {'phase1','burn_model'}, sys.maneuver.default_burn_model);
-    sys.maneuver.finite_burn_thrust = get_json_number(cfg, {'maneuver','finite_burn_thrust_N'}, sys.maneuver.finite_burn_thrust);
-    sys.maneuver.finite_burn_isp = get_json_number(cfg, {'maneuver','finite_burn_isp_s'}, sys.maneuver.finite_burn_isp);
-    sys.maneuver.finite_burn_dt = get_json_number(cfg, {'maneuver','finite_burn_dt_s'}, sys.maneuver.finite_burn_dt);
-    sys.maneuver.max_single_burn_duration = get_json_number(cfg, {'maneuver','max_single_burn_duration_s'}, sys.maneuver.max_single_burn_duration);
-    sys.maneuver.max_single_burn_delta_v = get_json_number(cfg, {'maneuver','max_single_burn_delta_v_m_s'}, sys.maneuver.max_single_burn_delta_v);
-
-    if has_json_path(cfg, {'environment','atmospheric_drag'})
-        sys.environment.atmospheric_drag.enabled = get_json_bool(cfg, {'environment','atmospheric_drag','enabled'}, sys.environment.atmospheric_drag.enabled);
-        sys.environment.atmospheric_drag.model = get_json_string(cfg, {'environment','atmospheric_drag','model'}, sys.environment.atmospheric_drag.model);
-        sys.environment.atmospheric_drag.use_matlab_atmosisa = get_json_bool(cfg, {'environment','atmospheric_drag','use_matlab_atmosisa'}, sys.environment.atmospheric_drag.use_matlab_atmosisa);
-        sys.environment.atmospheric_drag.co_rotate_atmosphere = get_json_bool(cfg, {'environment','atmospheric_drag','co_rotate_atmosphere'}, sys.environment.atmospheric_drag.co_rotate_atmosphere);
-        sys.environment.atmospheric_drag.earth_rotation_rad_s = get_json_number(cfg, {'environment','atmospheric_drag','earth_rotation_rad_s'}, sys.environment.atmospheric_drag.earth_rotation_rad_s);
-        sys.environment.atmospheric_drag.chaser_cd = get_json_number(cfg, {'environment','atmospheric_drag','chaser_cd'}, sys.environment.atmospheric_drag.chaser_cd);
-        sys.environment.atmospheric_drag.chaser_area_m2 = get_json_number(cfg, {'environment','atmospheric_drag','chaser_area_m2'}, sys.environment.atmospheric_drag.chaser_area_m2);
-        sys.environment.atmospheric_drag.target_cd = get_json_number(cfg, {'environment','atmospheric_drag','target_cd'}, sys.environment.atmospheric_drag.target_cd);
-        sys.environment.atmospheric_drag.target_area_m2 = get_json_number(cfg, {'environment','atmospheric_drag','target_area_m2'}, sys.environment.atmospheric_drag.target_area_m2);
-        sys.Target_Mass = get_json_number(cfg, {'environment','atmospheric_drag','target_mass_kg'}, sys.Target_Mass);
-    end
-
-    if has_json_path(cfg, {'reentry'})
-        sys.reentry_vehicle.vehicle_mode = get_json_string(cfg, {'reentry','vehicle_mode'}, sys.reentry_vehicle.vehicle_mode);
-        sys.reentry_vehicle.selected_shape = get_json_string(cfg, {'reentry','shape'}, sys.reentry_vehicle.selected_shape);
-        sys.reentry_vehicle.dt = get_json_number(cfg, {'reentry','dt_s'}, sys.reentry_vehicle.dt);
-        sys.reentry_vehicle.max_time = get_json_number(cfg, {'reentry','max_time_s'}, sys.reentry_vehicle.max_time);
-        sys.reentry_vehicle.terminal_altitude = get_json_number(cfg, {'reentry','terminal_altitude_m'}, sys.reentry_vehicle.terminal_altitude);
-        sys.reentry_vehicle.lift_enabled = get_json_bool(cfg, {'reentry','lift_enabled'}, sys.reentry_vehicle.lift_enabled);
-        sys.reentry_vehicle.gravity_model = get_json_string(cfg, {'reentry','gravity_model'}, sys.reentry_vehicle.gravity_model);
-        if has_json_path(cfg, {'reentry','aoa_deg'})
-            sys.reentry_vehicle.aoa_deg = get_json_number(cfg, {'reentry','aoa_deg'}, 20);
-        end
-        sys.reentry_vehicle.bank_angle_deg = get_json_number(cfg, {'reentry','bank_angle_deg'}, sys.reentry_vehicle.bank_angle_deg);
-        sys.reentry_vehicle.los_margin_altitude = get_json_number(cfg, {'reentry','los_margin_altitude_m'}, sys.reentry_vehicle.los_margin_altitude);
-        sys.reentry_vehicle.capsule.mass_kg = get_json_number(cfg, {'reentry','capsule','mass_kg'}, sys.reentry_vehicle.capsule.mass_kg);
-        sys.reentry_vehicle.capsule.add_to_chaser_initial_mass = get_json_bool(cfg, {'reentry','capsule','add_to_chaser_initial_mass'}, sys.reentry_vehicle.capsule.add_to_chaser_initial_mass);
-        sys.reentry_vehicle.capsule.separation_mode = get_json_string(cfg, {'reentry','capsule','separation_mode'}, sys.reentry_vehicle.capsule.separation_mode);
-        sys.reentry_vehicle.capsule.use_paper_entry_conditions = get_json_bool(cfg, {'reentry','capsule','use_paper_entry_conditions'}, sys.reentry_vehicle.capsule.use_paper_entry_conditions);
-        sys.reentry_vehicle.capsule.altitude_termination_enabled = get_json_bool(cfg, {'reentry','capsule','altitude_termination_enabled'}, sys.reentry_vehicle.capsule.altitude_termination_enabled);
-        sys.reentry_vehicle.spaceplane.communication.enabled = get_json_bool(cfg, {'reentry','communication','enabled'}, sys.reentry_vehicle.spaceplane.communication.enabled);
-        sys.reentry_vehicle.spaceplane.communication.relay_mode = get_json_string(cfg, {'reentry','communication','relay_mode'}, sys.reentry_vehicle.spaceplane.communication.relay_mode);
-        sys.reentry_vehicle.spaceplane.communication.antenna_mount = get_json_string(cfg, {'reentry','communication','antenna_mount'}, sys.reentry_vehicle.spaceplane.communication.antenna_mount);
-        sys.reentry_vehicle.spaceplane.communication.beam_half_angle_deg = get_json_number(cfg, {'reentry','communication','beam_half_angle_deg'}, sys.reentry_vehicle.spaceplane.communication.beam_half_angle_deg);
-        sys.reentry_vehicle.spaceplane.communication.min_range_m = get_json_number(cfg, {'reentry','communication','min_range_m'}, sys.reentry_vehicle.spaceplane.communication.min_range_m);
-        sys.reentry_vehicle.spaceplane.communication.max_range_m = get_json_number(cfg, {'reentry','communication','max_range_m'}, sys.reentry_vehicle.spaceplane.communication.max_range_m);
-        sys.reentry_vehicle.spaceplane.communication.tracking_scope = get_json_string(cfg, {'reentry','communication','tracking_scope'}, sys.reentry_vehicle.spaceplane.communication.tracking_scope);
-        sys.reentry_vehicle.spaceplane.communication.evaluate_bank_feasibility = get_json_bool(cfg, {'reentry','communication','evaluate_bank_feasibility'}, sys.reentry_vehicle.spaceplane.communication.evaluate_bank_feasibility);
-        sys.reentry_vehicle.spaceplane.communication.earth_fixed_to_eci_angle_at_mission_epoch_deg = ...
-            get_json_number(cfg, ...
-                {'reentry','communication','earth_fixed_to_eci_angle_at_mission_epoch_deg'}, ...
-                sys.reentry_vehicle.spaceplane.communication.earth_fixed_to_eci_angle_at_mission_epoch_deg);
-        sys.reentry_vehicle.uncertainty.density_scale = get_json_number(cfg, {'reentry','uncertainty','density_scale'}, sys.reentry_vehicle.uncertainty.density_scale);
-        sys.reentry_vehicle.uncertainty.cd_scale = get_json_number(cfg, {'reentry','uncertainty','cd_scale'}, sys.reentry_vehicle.uncertainty.cd_scale);
-        sys.reentry_vehicle.uncertainty.ld_scale = get_json_number(cfg, {'reentry','uncertainty','ld_scale'}, sys.reentry_vehicle.uncertainty.ld_scale);
     end
 end
 

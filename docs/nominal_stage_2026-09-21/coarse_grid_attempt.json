@@ -1,0 +1,152 @@
+[
+  {
+    "phase_deg": 90,
+    "method": "NOMINAL_TARGET",
+    "planning_execution_runtime_s": 1.4109181,
+    "position_error_m": 0.00018143514946112124,
+    "relative_velocity_m_s": [
+      -7.92308962586523E-15,
+      4.4129802316687865E-14,
+      0
+    ],
+    "position_lvlh_m": [
+      -0.0001813534554457874,
+      -4999.9999945559521,
+      0
+    ],
+    "phase1_delta_v_m_s": 114.07276016322714,
+    "phase1_mass_kg": 4528.7909092344844,
+    "handoff_correction_m_s": 4.4835419053795441E-14,
+    "phase2_delta_v_m_s": 7.4774265435730207,
+    "total_through_phase2_m_s": 121.55018670680016,
+    "downstream_status": "PROPAGATED_EXISTING_PHASE2",
+    "phase2_runtime_s": 4.2412044,
+    "optimizer_success": false,
+    "optimizer_message": "NO_OPTIMIZATION_TARGETING_CONVERGED"
+  },
+  {
+    "phase_deg": 90,
+    "method": "GRID_SEARCH",
+    "planning_execution_runtime_s": 0.8768318,
+    "position_error_m": 120258.50762457072,
+    "relative_velocity_m_s": [
+      -3.1054081513114489,
+      4.5461047469609426,
+      0
+    ],
+    "position_lvlh_m": [
+      -3441.7004417951102,
+      -125209.24820560971,
+      -0
+    ],
+    "phase1_delta_v_m_s": 125.5381736487986,
+    "phase1_mass_kg": 4502.394031925317,
+    "handoff_correction_m_s": null,
+    "phase2_delta_v_m_s": null,
+    "total_through_phase2_m_s": null,
+    "downstream_status": "NOT_RUN_HANDOFF_GATE_FAILED",
+    "phase2_runtime_s": null,
+    "optimizer_success": false,
+    "optimizer_message": "NOT_REQUESTED"
+  },
+  {
+    "phase_deg": 90,
+    "method": "HISTORICAL_PARAMETER_REPLAY",
+    "planning_execution_runtime_s": 1.4591373,
+    "position_error_m": 0.13433410802699292,
+    "relative_velocity_m_s": [
+      -15.943520420399693,
+      -55.161562507986254,
+      0
+    ],
+    "position_lvlh_m": [
+      -0.12985839551288336,
+      -4999.9656132337341,
+      0
+    ],
+    "phase1_delta_v_m_s": 57.992996742104424,
+    "phase1_mass_kg": 4660.15038187409,
+    "handoff_correction_m_s": 57.419455080296409,
+    "phase2_delta_v_m_s": 64.891782444280452,
+    "total_through_phase2_m_s": 122.88477918638488,
+    "downstream_status": "PROPAGATED_EXISTING_PHASE2",
+    "phase2_runtime_s": 3.8841678,
+    "optimizer_success": false,
+    "optimizer_message": "HISTORICAL_ITERATION_LIMIT; REPLAY_RUNTIME_ONLY; 0898fc109c2050eb33245723a68d83569093c14c53279d31911a97622005c82b"
+  },
+  {
+    "phase_deg": 60,
+    "method": "NOMINAL_TARGET",
+    "planning_execution_runtime_s": 0.7158956,
+    "position_error_m": 0.0012993586869730653,
+    "relative_velocity_m_s": [
+      -4.7395789301417605E-14,
+      2.977252133015564E-14,
+      -0
+    ],
+    "position_lvlh_m": [
+      0.00075777173105961992,
+      -5000.0010555164617,
+      0
+    ],
+    "phase1_delta_v_m_s": 113.25681841562587,
+    "phase1_mass_kg": 4530.675343934492,
+    "handoff_correction_m_s": 5.5971098522888971E-14,
+    "phase2_delta_v_m_s": 7.4730136236493747,
+    "total_through_phase2_m_s": 120.72983203927525,
+    "downstream_status": "PROPAGATED_EXISTING_PHASE2",
+    "phase2_runtime_s": 4.7843073,
+    "optimizer_success": false,
+    "optimizer_message": "NO_OPTIMIZATION_TARGETING_CONVERGED"
+  },
+  {
+    "phase_deg": 60,
+    "method": "GRID_SEARCH",
+    "planning_execution_runtime_s": 0.2846702,
+    "position_error_m": 6.4411814776930353E+6,
+    "relative_velocity_m_s": [
+      13.173525087777401,
+      4.9779040013844211,
+      0
+    ],
+    "position_lvlh_m": [
+      -3.022336915142884E+6,
+      -5.6930838952972926E+6,
+      -0
+    ],
+    "phase1_delta_v_m_s": 124.88113310984895,
+    "phase1_mass_kg": 4503.902575087679,
+    "handoff_correction_m_s": null,
+    "phase2_delta_v_m_s": null,
+    "total_through_phase2_m_s": null,
+    "downstream_status": "NOT_RUN_HANDOFF_GATE_FAILED",
+    "phase2_runtime_s": null,
+    "optimizer_success": false,
+    "optimizer_message": "NOT_REQUESTED"
+  },
+  {
+    "phase_deg": 60,
+    "method": "HISTORICAL_PARAMETER_REPLAY",
+    "planning_execution_runtime_s": 2.0274919,
+    "position_error_m": 3136.4211964265874,
+    "relative_velocity_m_s": [
+      -8.1932476799429956,
+      -62.070808307282825,
+      0
+    ],
+    "position_lvlh_m": [
+      3109.4497760148861,
+      -5410.4388040073209,
+      0
+    ],
+    "phase1_delta_v_m_s": 57.992996742104424,
+    "phase1_mass_kg": 4660.15038187409,
+    "handoff_correction_m_s": null,
+    "phase2_delta_v_m_s": null,
+    "total_through_phase2_m_s": null,
+    "downstream_status": "NOT_RUN_HANDOFF_GATE_FAILED",
+    "phase2_runtime_s": null,
+    "optimizer_success": false,
+    "optimizer_message": "HISTORICAL_ITERATION_LIMIT; REPLAY_RUNTIME_ONLY; 0898fc109c2050eb33245723a68d83569093c14c53279d31911a97622005c82b"
+  }
+]

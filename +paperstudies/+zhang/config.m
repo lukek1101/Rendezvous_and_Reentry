@@ -111,7 +111,7 @@ function cfg = config()
 
     % These values are not attributed to the paper. They only make the
     % optional shared Reentry_Propagator adapter executable.
-    cfg.surrogate.shape_name = "COMPROMISE";
+    cfg.surrogate.shape_name = "LEGACY_PAPER_RLV";
     cfg.surrogate.mass_kg = 2000;
     cfg.surrogate.reference_area_m2 = pi * 1.944 * 1.296 / 4;
     cfg.surrogate.density_model = "PROJECT_ISA76";

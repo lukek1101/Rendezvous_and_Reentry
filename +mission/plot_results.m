@@ -35,7 +35,7 @@ end
 grid on;
 xlabel('V-bar (m)');
 ylabel('R-bar (m)');
-title('R-bar Approach Trajectory (LVLH)');
+title('Proximity Approach Trajectory (LVLH)');
 legend('Chaser Trajectory', 'Commanded Waypoints', 'Target', 'Location', 'best');
 set(gca, 'XDir', 'reverse'); % Flight direction to the left
 

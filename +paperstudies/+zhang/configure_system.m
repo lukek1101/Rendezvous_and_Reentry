@@ -14,7 +14,7 @@ function [sys, provenance] = configure_system(options, cfg)
               'options must be a struct.');
     end
 
-    sys = Mission_Config();
+    sys = Mission_Config("LEGACY_PAPER_RLV");
     sys.Re = cfg.earth.radius_m;
     sys.reentry_vehicle.vehicle_mode = "SPACEPLANE";
     sys.reentry_vehicle.gravity_model = "CENTRAL_SPHERICAL";

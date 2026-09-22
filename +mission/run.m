@@ -54,6 +54,14 @@ fprintf('   Phase 1 terminal altitude: %.2f km\n', (norm(X_chaser(1:3)) - sys.Re
 
 
 result.config = cfg;
+result.interfaces.initial=mission.state_record(X_chaser_init,sys,0,"MISSION_INITIAL");
+if isfield(hist_p1,'execution')
+    result.interfaces.initial_nominal=result.interfaces.initial;
+    initial_actual=X_chaser_init;
+    initial_actual(1:6)=[hist_p1.pos(:,1);hist_p1.vel(:,1)];
+    result.interfaces.initial=mission.state_record(initial_actual,sys,0,"DISTURBED_INITIAL_PERFECT_STATE_KNOWLEDGE");
+end
+result.interfaces.phase1_to_phase2=mission.state_record(X_chaser,sys,hist_p1.time(end),"PROPAGATED_PHASE1");
 result.phasing = struct('history', hist_p1, 'delta_v', dV_p1, 'fuel', fuel_p1, ...
     'chaser', X_chaser, 'target', X_target, 'position_error', miss_p1);
 [X_chaser, X_target, result.proximity] = mission.proximity(sys, X_chaser, X_target, cfg.phase2);
@@ -65,6 +73,8 @@ end
 m_current = X_chaser(14);
 Budget = [Budget; {"Phase 2: "+result.proximity.execution_model, result.proximity.delta_v, ...
     result.proximity.fuel, m_current, m_current}];
+result.interfaces.phase2_to_phase3=mission.state_record(X_chaser,sys, ...
+    hist_p1.time(end)+result.proximity.duration,"PROPAGATED_PHASE2");
 if stop_after_proximity
     result.budget=Budget;
     return;
@@ -88,12 +98,18 @@ phase3_elapsed_to_interface = entry_interface_info.time_s;
 fprintf('   entry interface %.3f km, FPA %.3f deg, speed %.3f m/s\n', ...
     entry_interface_info.altitude_m/1000, entry_interface_info.fpa_deg, entry_interface_info.velocity_m_s);
 mission_elapsed_to_entry_s = hist_p1.time(end) + result.proximity.duration + phase3_elapsed_to_interface;
+result.interfaces.phase3_to_phase4=mission.state_record(X_entry_interface,sys, ...
+    mission_elapsed_to_entry_s,"PROPAGATED_DEORBIT_TERMINAL");
 [X_reentry_vehicle, hist_reentry, reentry_atmo_info, X_entry_interface] = mission.entry( ...
     sys, X_entry_interface, X_orbiting_entry_relay0, phase3_elapsed_to_interface, ...
     mission_elapsed_to_entry_s, capsule_mass_added_to_initial_stack);
 result.entry = struct('history', hist_reentry, 'summary', reentry_atmo_info, ...
     'vehicle', X_reentry_vehicle, 'initial_state', X_entry_interface, ...
     'mission_start_time', mission_elapsed_to_entry_s);
+result.entry.requested_conditions=entry_interface_info.requested;
+result.entry.achieved_conditions=result.interfaces.phase3_to_phase4;
+result.entry.post_separation=mission.state_record(X_entry_interface,sys, ...
+    mission_elapsed_to_entry_s,"EXPLICIT_SEPARATION_MASS_LEDGER");
 Budget = [Budget; {"Phase 4: Atmospheric Entry", 0, 0, ...
     reentry_atmo_info.active_vehicle_mass_kg, reentry_atmo_info.total_accounted_mass_kg}];
 result.budget = Budget;

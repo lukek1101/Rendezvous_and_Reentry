@@ -1,4 +1,5 @@
-function aux = evaluate_state(X, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k)
+function aux = evaluate_state(X, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, entry_time_s)
+    if nargin<8, entry_time_s=0; end
     % Evaluate the shared seven-state atmospheric-entry physics model.
     % X = [r_ECI_m; v_ECI_m_s; mass_kg].
 
@@ -35,8 +36,8 @@ function aux = evaluate_state(X, sys, shape, aoa_deg, bank_angle_deg, lift_enabl
     v_rel = v - v_atm;
     speed_rel = norm(v_rel);
     mach = speed_rel / max(a_sound, eps);
-    [aoa_actual_deg, bank_actual_deg] = reentry_core.resolve_commands( ...
-        shape, aoa_deg, bank_angle_deg, speed_rel, mach);
+    [aoa_actual_deg, bank_actual_deg, profile_info] = reentry_core.resolve_commands( ...
+        shape, aoa_deg, bank_angle_deg, speed_rel, mach, altitude, entry_time_s);
 
     a_gravity = reentry_core.gravity_acceleration(r, sys, shape);
     a_aero = zeros(3,1);
@@ -96,4 +97,5 @@ function aux = evaluate_state(X, sys, shape, aoa_deg, bank_angle_deg, lift_enabl
     aux.a_aero = a_aero;
     aux.a_drag = a_drag;
     aux.a_lift = a_lift;
+    aux.aoa_profile=profile_info;
 end

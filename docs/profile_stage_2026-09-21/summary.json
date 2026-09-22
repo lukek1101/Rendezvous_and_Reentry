@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "reference_profiles": {
+    "status": "PASS",
+    "duration_s": 20,
+    "position_disagreement_m": 5.00753710373121E-8,
+    "initial_aoa_deg": 26.39,
+    "final_aoa_deg": 25.206
+  }
+}

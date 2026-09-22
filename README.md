@@ -1,5 +1,20 @@
 # Unmanned Rendezvous Mission Simulator
 
+The [2026-09-22 evaluation report](docs/INTEGRATED_EVALUATION_2026-09-22.md)
+provides reproducible design sweeps, fixed-plan robustness trials, resource
+plots and explicit limits on integrated-mission validity.
+
+**Reference migration (2026-09-21):** capsule mode selects Apollo 7 preflight
+trim (`APOLLO7_PREFLIGHT_TRIM`, Mach 0.40–27.72); ARD remains explicitly
+selectable. Spaceplane mode selects HORUS-2B. See the
+[Apollo migration and verification](docs/APOLLO7_MIGRATION_2026-09-21.md).
+The current orbital handoff is Mach 28.79, beyond this table's 27.72 ceiling;
+integrated entry stops at the validity check pending qualified high-Mach data.
+Their current aerodynamic domains are deliberately
+bounded; they are not complete flight reproductions. Old Python archives are
+rejected by default. See [configuration, replay and validity instructions](docs/REFERENCE_MIGRATION_2026-09-21.md)
+before using the historical full-mission/study examples below.
+
 MATLAB-based end-to-end rendezvous mission simulator for an unmanned chaser spacecraft operating in Earth orbit. The current codebase combines:
 
 - **Phase 1**: 3-DOF phasing / homing with impulsive maneuvers and J2-aware orbital propagation
@@ -87,6 +102,28 @@ Public entry points remain at the repository root; implementation packages
 use MATLAB namespaces. Add the root to your path, keeping `legacy` off it.
 
 ## Programmatic runs and verification
+
+For the bounded drag-free, impulsive polar orbital path through Phase2:
+
+```matlab
+result = Run_Nominal_Orbit();
+```
+
+This uses terminal targeting with explicit0.5 m /0.001 m/s tolerances and
+stops before deorbit/entry. The existing optimizer and Hohmann grid search
+remain optional comparisons. See the [planning limits and benchmark](docs/NOMINAL_ORBIT_PLANNING_2026-09-21.md).
+
+For reproducible disturbed execution with bounded orbit corrections, set
+`settings.phase1.correction.enabled=true` and pass `settings` to
+`Run_Nominal_Orbit`. Set `corrections_enabled=false` inside that correction
+struct for the identical disturbed open-loop comparison. This stage assumes
+perfect instantaneous state knowledge; see [correction assumptions, budgets
+and paired results](docs/ORBIT_CORRECTION_2026-09-21.md).
+
+Hybrid proximity supports `settings.phase2.autonomous.approach_mode` values
+`'-R'` (default), `'+R'`, `'+V'` and `'-V'`, where the sign names the chaser's
+side of the target. `settings.phase2.terminal_standoff_m` specifies the final
+distance along that side. See [axis conventions, dynamics and matched results](docs/PROXIMITY_APPROACH_MODES_2026-09-21.md).
 
 ```matlab
 settings.runtime.allow_environment_overrides = false;
@@ -228,9 +265,12 @@ Run_All_Reentry_Validations
 ```
 
 The entry attitude inputs are intentionally simple in the current model.
-SPACEPLANE uses its configured speed-scheduled AoA unless
-`run.reentry.aoa_deg` supplies a constant override; CAPSULE uses its constant
-trim surrogate. `run.reentry.bank_angle_deg` is held constant in both modes.
+Reference CAPSULE uses digitized ARD AoA versus altitude; reference SPACEPLANE
+uses the user-selected Shuttle-inspired AoA versus air-relative speed. A user `run.reentry.aoa_profile`
+or scalar `run.reentry.aoa_deg` overrides that fallback; specifying both errors.
+Legacy presets retain their historical commands. See the
+[profile data and validity record](docs/REFERENCE_PROFILES_2026-09-21.md).
+`run.reentry.bank_angle_deg` is held constant in both modes.
 The simulator does not yet propagate vehicle attitude, solve trim, or apply
 closed-loop bank guidance for the separated re-entry vehicle.
 
@@ -421,9 +461,9 @@ the JSON for traceability.
 
 After Phase 3 reaches the configured entry interface, `Reentry_Propagator.m` propagates a separated re-entry vehicle through a co-rotating ISA76 atmosphere. The translational state remains ECI, but drag and lift use atmosphere-relative velocity, which is equivalent to an ECEF-relative aerodynamic velocity model.
 
-SPACEPLANE resolves AoA from the configured speed schedule at every dynamics
-evaluation unless `run.reentry.aoa_deg` supplies a constant override. CAPSULE
-uses a constant trim surrogate. `run.reentry.bank_angle_deg` rotates the lift
+Each dynamics evaluation resolves the user AoA profile/constant or the selected
+reference fallback. Profile coverage does not extend aerodynamic validity.
+`run.reentry.bank_angle_deg` rotates the lift
 direction about the atmosphere-relative velocity vector and remains open-loop
 constant. The flight-path angle is not commanded during Phase 4; it is computed
 from the propagated position and velocity state and evolves naturally under

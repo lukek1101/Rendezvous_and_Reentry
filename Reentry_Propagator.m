@@ -136,9 +136,9 @@ function [X_rv_final, X_chaser_final, hist, summary] = Reentry_Propagator(sys, X
 
         dt_eff = min(dt, max_time - elapsed);
         X_rv_prev = X_rv;
-        X_rv_trial = rk4_reentry_step_local(X_rv_prev, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, dt_eff);
+        X_rv_trial = rk4_reentry_step_local(X_rv_prev, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, dt_eff, elapsed);
         altitude_trial = norm(X_rv_trial(1:3)) - sys.Re;
-        aux_trial = reentry_aux_local(X_rv_trial, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k);
+        aux_trial = reentry_aux_local(X_rv_trial, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, elapsed+dt_eff);
 
         if altitude_termination_enabled
             altitude_event_target = terminal_altitude;
@@ -151,7 +151,7 @@ function [X_rv_final, X_chaser_final, hist, summary] = Reentry_Propagator(sys, X
         if altitude_crossed
             [X_altitude_cross, t_altitude_cross] = refine_reentry_altitude_crossing_local( ...
                 X_rv_prev, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, ...
-                altitude_event_target, dt_eff);
+                altitude_event_target, dt_eff, elapsed);
         else
             X_altitude_cross = [];
             t_altitude_cross = inf;
@@ -160,7 +160,7 @@ function [X_rv_final, X_chaser_final, hist, summary] = Reentry_Propagator(sys, X
         if speed_crossed
             [X_speed_cross, t_speed_cross] = refine_reentry_speed_crossing_local( ...
                 X_rv_prev, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, ...
-                terminal_speed, dt_eff);
+                terminal_speed, dt_eff, elapsed);
         else
             X_speed_cross = [];
             t_speed_cross = inf;
@@ -193,7 +193,7 @@ function [X_rv_final, X_chaser_final, hist, summary] = Reentry_Propagator(sys, X
         elapsed = elapsed + dt_advance;
         integration_steps = integration_steps + 1;
 
-        aux_now = reentry_aux_local(X_rv, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k);
+        aux_now = reentry_aux_local(X_rv, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, elapsed);
         heat_load = heat_load + 0.5 * (aux_prev.heat_flux + aux_now.heat_flux) * dt_advance;
         [hist, aux_prev] = log_reentry_state_local(hist, X_rv, X_chaser, elapsed, heat_load, sys, shape, ...
                                                    aoa_deg, bank_angle_deg, lift_enabled, los_margin_altitude, heat_k);
@@ -213,6 +213,11 @@ function [X_rv_final, X_chaser_final, hist, summary] = Reentry_Propagator(sys, X
     X_chaser_final = X_chaser;
 
     summary = summarize_reentry_local(hist, shape, terminal_altitude, termination_reason, integration_steps);
+    if isfield(shape,'active_aoa_profile'), summary.aoa_profile=shape.active_aoa_profile; end
+    summary.model=struct('name',shape.name,'aero_model',shape.aero_model, ...
+        'provenance',get_shape_field_local(shape,'provenance',"LEGACY_SURROGATE"), ...
+        'valid_mach',get_shape_field_local(shape,'valid_mach',[]), ...
+        'valid_alpha_deg',get_shape_field_local(shape,'valid_alpha_deg',[]));
 end
 
 function hist = init_reentry_hist_local()
@@ -237,6 +242,7 @@ function hist = init_reentry_hist_local()
     hist.heat_load = [];
     hist.g_load = [];
     hist.aoa_deg = [];
+    hist.aoa_profile_boundary_held = [];
     hist.bank_angle_deg = [];
     hist.cd = [];
     hist.cl = [];
@@ -263,7 +269,7 @@ function hist = init_reentry_hist_local()
 end
 
 function [hist, aux] = log_reentry_state_local(hist, X_rv, X_chaser, t, heat_load, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, los_margin_altitude, heat_k)
-    aux = reentry_aux_local(X_rv, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k);
+    aux = reentry_aux_local(X_rv, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, t);
     if isempty(X_chaser) || numel(X_chaser) < 6
         los_clear = NaN;
         los_clearance = NaN;
@@ -302,6 +308,7 @@ function [hist, aux] = log_reentry_state_local(hist, X_rv, X_chaser, t, heat_loa
     hist.heat_load = [hist.heat_load, heat_load];
     hist.g_load = [hist.g_load, aux.g_load];
     hist.aoa_deg = [hist.aoa_deg, aux.aoa_deg];
+    hist.aoa_profile_boundary_held = [hist.aoa_profile_boundary_held, aux.aoa_profile.boundary_held];
     hist.bank_angle_deg = [hist.bank_angle_deg, aux.bank_angle_deg];
     hist.cd = [hist.cd, aux.cd];
     hist.cl = [hist.cl, aux.cl];
@@ -365,6 +372,7 @@ function summary = summarize_reentry_local(hist, shape, terminal_altitude, termi
     summary.aoa_deg = hist.aoa_deg(1);
     summary.initial_aoa_deg = hist.aoa_deg(1);
     summary.final_aoa_deg = hist.aoa_deg(end);
+    summary.aoa_profile_boundary_held = any(hist.aoa_profile_boundary_held);
     summary.bank_angle_deg = hist.bank_angle_deg(1);
     summary.max_heat_flux_W_m2 = max(hist.heat_flux);
     summary.total_heat_load_J_m2 = hist.heat_load(end);
@@ -597,26 +605,26 @@ function summary = summarize_reentry_local(hist, shape, terminal_altitude, termi
     summary.ld_scale = get_shape_field_local(shape, 'ld_scale', 1.0);
 end
 
-function [X_cross, t_cross] = refine_reentry_altitude_crossing_local(X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, target_altitude, dt_window)
+function [X_cross, t_cross] = refine_reentry_altitude_crossing_local(X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, target_altitude, dt_window, entry_time_s)
     [X_cross, t_cross] = reentry_core.refine_altitude_crossing( ...
         X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, ...
-        target_altitude, dt_window);
+        target_altitude, dt_window, entry_time_s);
 end
 
-function [X_cross, t_cross] = refine_reentry_speed_crossing_local(X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, target_speed, dt_window)
+function [X_cross, t_cross] = refine_reentry_speed_crossing_local(X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, target_speed, dt_window, entry_time_s)
     [X_cross, t_cross] = reentry_core.refine_speed_crossing( ...
         X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, ...
-        target_speed, dt_window);
+        target_speed, dt_window, entry_time_s);
 end
 
-function X_next = rk4_reentry_step_local(X, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, dt)
+function X_next = rk4_reentry_step_local(X, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, dt, entry_time_s)
     X_next = reentry_core.rk4_step( ...
-        X, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, dt);
+        X, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, dt, entry_time_s);
 end
 
-function aux = reentry_aux_local(X, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k)
+function aux = reentry_aux_local(X, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, entry_time_s)
     aux = reentry_core.evaluate_state( ...
-        X, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k);
+        X, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, entry_time_s);
 end
 
 function [blackout_active, constraint_active, phase] = ...
@@ -786,7 +794,7 @@ function shape = get_reentry_shape_local(sys, params)
         error('Unknown re-entry vehicle_mode: %s. Use SPACEPLANE or CAPSULE.', char(vehicle_mode));
     end
 
-    default_shape = get_reentry_vehicle_field_local(sys, 'selected_shape', "COMPROMISE");
+    default_shape = get_reentry_vehicle_field_local(sys, 'selected_shape', "HORUS_2B");
     if vehicle_mode == "CAPSULE"
         name = "CAPSULE";
     else
@@ -990,20 +998,13 @@ function shape = get_reentry_shape_local(sys, params)
         'density_scale', 0, false);
     validate_finite_scalar_local(shape.cd_scale, 'cd_scale', 0, false);
     validate_finite_scalar_local(shape.ld_scale, 'ld_scale', 0, true);
+    shape=reference_vehicle.resolve_profile(shape,sys.reentry_vehicle,params);
 end
 
 function key = normalize_shape_key_local(name)
     txt = upper(strtrim(string(name)));
     txt = replace(txt, "-", "_");
     txt = replace(txt, " ", "_");
-
-    if txt == "HEATLOADMIN" || txt == "HEAT_LOAD_MIN"
-        txt = "HEATLOAD_MIN";
-    elseif txt == "PAYLOADMAX" || txt == "PAY_LOAD_MAX"
-        txt = "PAYLOAD_MAX";
-    elseif txt == "TPSMIN"
-        txt = "TPS_MIN";
-    end
 
     key = char(txt);
 end

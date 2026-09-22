@@ -24,10 +24,11 @@ function run = Mission_Run_Config(defaults)
     run.python_config.file = "configs/latest_python_solution.json";
     run.python_config.case_id = "";
     run.python_config.hash = "";
+    run.python_config.allow_legacy_replay = false; % explicit legacy fixture only
 
     % Keep legacy setenv(...) overrides available for batch scripts. Set false
     % when you want this file to be the only run-control surface.
-    run.runtime.allow_environment_overrides = true;
+    run.runtime.allow_environment_overrides = false;
 
     %% Maneuver execution
     % "IMPULSIVE" or "FINITE_BURN".
@@ -44,6 +45,9 @@ function run = Mission_Run_Config(defaults)
 
     %% Phase 1: phasing / homing
     run.phase1.mode = "CUSTOM_IMPULSE"; % "CUSTOM_IMPULSE", "HOHMANN"; "MULTI_HOHMANN" is preliminary
+    run.phase1.hohmann_method = "NOMINAL_TARGET"; % or existing "GRID_SEARCH"
+    run.phase1.nominal = mission.nominal_defaults();
+    run.phase1.correction = mission.correction_defaults();
 
     % Leave [] to use the selected Python optimizer JSON values when available.
     run.phase1.phase_angle_deg = [];
@@ -70,6 +74,7 @@ function run = Mission_Run_Config(defaults)
     run.phase2.dt_s = 1.0;
     run.phase2.S2_m = [0; -5000; 0];
     run.phase2.S4_R_abs_m = 30;
+    run.phase2.terminal_standoff_m = []; % explicit mode-independent override; empty retains legacy field
     run.phase2.initial_S2_tol_m = 50.0;
     run.phase2.tof_initial_s2_s = 1200;
     run.phase2.delta_R_cycloid_m = 400;
@@ -108,15 +113,16 @@ function run = Mission_Run_Config(defaults)
     % CAPSULE uses the paper-based 60 kg capsule definition and ignores
     % run.reentry.shape.
     run.reentry.vehicle_mode = defaults.reentry_vehicle.vehicle_mode; % SPACEPLANE or CAPSULE
-    run.reentry.shape = defaults.reentry_vehicle.selected_shape; % COMPROMISE, HEATLOAD_MIN, PAYLOAD_MAX, TPS_MIN
+    run.reentry.shape = defaults.reentry_vehicle.selected_shape; % HORUS_2B
+    run.reentry.aoa_profile = defaults.reentry_vehicle.aoa_profile;
     run.reentry.dt_s = defaults.reentry_vehicle.dt;
     run.reentry.max_time_s = defaults.reentry_vehicle.max_time;
     run.reentry.terminal_altitude_m = defaults.reentry_vehicle.terminal_altitude;
     run.reentry.lift_enabled = defaults.reentry_vehicle.lift_enabled;
     run.reentry.gravity_model = defaults.reentry_vehicle.gravity_model;
-    % Leave aoa_deg = [] to use the selected vehicle model. SPACEPLANE then
-    % uses the paper speed-based AoA schedule; a scalar override forces a
-    % constant AoA. Bank remains an open-loop constant in this version.
+    % Empty profile/constant uses the selected reference AoA fallback.
+    % An explicit profile or scalar constant overrides it; specifying both errors.
+    % Reference schedules do not supply a new bank guidance law.
     run.reentry.aoa_deg = [];
     run.reentry.bank_angle_deg = defaults.reentry_vehicle.bank_angle_deg;
     run.reentry.los_margin_altitude_m = defaults.reentry_vehicle.los_margin_altitude;

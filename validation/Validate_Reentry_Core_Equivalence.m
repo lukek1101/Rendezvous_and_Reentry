@@ -9,7 +9,7 @@ function results = Validate_Reentry_Core_Equivalence()
     project_root = fileparts(fileparts(mfilename('fullpath')));
     addpath(project_root);
 
-    sys = Mission_Config();
+    sys = Legacy_Baseline_System();
     % Frozen SPACEPLANE references must not inherit a CAPSULE run default.
     sys.reentry_vehicle.vehicle_mode = "SPACEPLANE";
     % Force the repository-owned atmosphere implementation so equivalence
@@ -488,6 +488,11 @@ function raap_deg = legacy_raap_reference_local(r, v_rel, r_relay, aoa_deg, bank
 end
 
 function assert_aux_equal_local(actual, expected, label)
+    % New provenance is checked separately; all historical physics fields
+    % still require the original frozen evaluator's values and field contract.
+    assert(actual.aoa_profile.source=="EXISTING_COMMAND" && ...
+        ~actual.aoa_profile.boundary_held && isnan(actual.aoa_profile.query));
+    actual=rmfield(actual,'aoa_profile');
     assert(isequal(fieldnames(actual), fieldnames(expected)), ...
         '%s field contract changed.', label);
     names = fieldnames(expected);

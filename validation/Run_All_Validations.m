@@ -6,6 +6,12 @@ function results = Run_All_Validations()
     addpath(fullfile(root,'validation'));
     results.code = Check_Project_Code();
     results.orbit = Validate_Orbit_Core();
+    results.nominal_planning = Validate_Nominal_Planning();
+    results.orbit_correction = Validate_Orbit_Correction();
+    results.approach_modes = Validate_Approach_Modes();
+    results.reference_migration = Validate_Reference_Migration();
+    results.reference_profiles = Validate_Reference_Profiles();
+    results.apollo7 = Validate_Apollo7();
     results.deorbit = Validate_Deorbit_Execution();
     results.reentry_core = Validate_Reentry_Core_Equivalence();
     results.reentry = Validate_Reentry_Propagator();

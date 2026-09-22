@@ -1,4 +1,5 @@
-function [X_cross, t_cross] = refine_altitude_crossing(X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, target_altitude, dt_window)
+function [X_cross, t_cross] = refine_altitude_crossing(X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, target_altitude, dt_window, entry_time_s)
+    if nargin<10, entry_time_s=0; end
 %REFINE_ALTITUDE_CROSSING Refine a bracketed downward altitude crossing.
     validateattributes(dt_window, {'numeric'}, ...
         {'real','scalar','finite','positive'}, mfilename, 'dt_window');
@@ -14,7 +15,7 @@ function [X_cross, t_cross] = refine_altitude_crossing(X0, sys, shape, aoa_deg, 
     hi = dt_window;
     altitude_lo = norm(X0(1:3)) - sys.Re;
     X_cross = reentry_core.rk4_step( ...
-        X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, hi);
+        X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, hi, entry_time_s);
     altitude_hi = norm(X_cross(1:3)) - sys.Re;
     tolerance = 1e-9;
     if abs(altitude_lo-target_altitude) <= tolerance
@@ -31,7 +32,7 @@ function [X_cross, t_cross] = refine_altitude_crossing(X0, sys, shape, aoa_deg, 
     for iter = 1:50
         mid = 0.5 * (lo + hi);
         X_mid = reentry_core.rk4_step( ...
-            X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, mid);
+            X0, sys, shape, aoa_deg, bank_angle_deg, lift_enabled, heat_k, mid, entry_time_s);
         altitude_mid = norm(X_mid(1:3)) - sys.Re;
 
         if altitude_mid > target_altitude

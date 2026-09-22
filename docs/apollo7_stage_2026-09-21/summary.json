@@ -1,0 +1,83 @@
+{
+  "matlab_validation_passed": true,
+  "validation_runtime_s": 79.9316513,
+  "nominal_orbit_runtime_s": 6.1775727,
+  "nominal_standoff_reached": true,
+  "phase1_delta_v_m_s": 114.07276016322714,
+  "phase2_delta_v_m_s": 7.47742654357606,
+  "initial_stack_mass_kg": 7608.261421917,
+  "post_proximity_mass_kg": 7151.0652960754487,
+  "entry_duration_s": 729.1146753115255,
+  "entry_endpoint_altitude_m": 7620,
+  "entry_mach_range": [
+    0.45767956557662032,
+    27.125247041198065
+  ],
+  "entry_peak_dynamic_pressure_Pa": 9716.3515056179986,
+  "entry_peak_g": 2.7490669549914193,
+  "entry_peak_heat_flux_W_m2": 422885.33461077063,
+  "entry_heat_surrogate_only": true,
+  "path_limits_specified": false,
+  "short_cross_integrator_position_difference_m": 2.629646640922036E-8,
+  "integrated_handoff": {
+    "time_s": 1760.4686742118647,
+    "altitude_m": 121920,
+    "velocity_m_s": 7891.7668220205405,
+    "fpa_deg": -2.0488581586560133,
+    "achieved": {
+      "schema_version": 2,
+      "source": "PROPAGATED_DEORBIT_TERMINAL",
+      "time_since_mission_epoch_s": 45199.364071046555,
+      "epoch": {
+        "schema_version": 2,
+        "position_unit": "m",
+        "velocity_unit": "m/s",
+        "mass_unit": "kg",
+        "time_unit": "s",
+        "angle_unit": "rad unless field ends _deg",
+        "translation_frame": "EARTH_CENTERED_INERTIAL",
+        "relative_frame": "R_V_H",
+        "orbital_geometry": "FIXED_XZ_POLAR",
+        "epoch_utc": "UNSPECIFIED",
+        "epoch_policy": "RELATIVE_TIME_WITH_EXPLICIT_EARTH_ANGLE",
+        "propulsion_provenance": "PROJECT_ASSUMPTION_NOT_REFERENCE_VEHICLE",
+        "attitude_policy": "IDENTITY_PLACEHOLDER_NOT_PROPAGATED"
+      },
+      "position_eci_m": [
+        1.4754410947394907E+6,
+        0,
+        6.33038818550671E+6
+      ],
+      "velocity_eci_m_s": [
+        -7744.900773949611,
+        0,
+        1515.4192736067782
+      ],
+      "mass_kg": 6616.86621009599,
+      "altitude_spherical_m": 121920,
+      "speed_inertial_m_s": 7891.7668220205405,
+      "fpa_inertial_deg": -2.0488581586560133,
+      "velocity_air_relative_m_s": [
+        -7744.900773949611,
+        -107.59087466463247,
+        1515.4192736067782
+      ],
+      "speed_air_relative_m_s": 7892.5001976214908,
+      "fpa_air_relative_deg": -2.04866769641345,
+      "earth_angle_at_mission_epoch_deg": 0
+    },
+    "requested": {
+      "altitude_m": 121920,
+      "fpa_inertial_deg": -2.055
+    },
+    "method": "PROPAGATED_EVENT_NO_STATE_RESET",
+    "crossing_verified": true,
+    "fpa_error_deg": 0.0061418413439868758
+  },
+  "integrated_handoff_mach": 28.794633045816379,
+  "deorbit_delta_v_m_s": 152.27660670713522,
+  "deorbit_fuel_kg": 534.19908597945869,
+  "deorbit_runtime_s": 1.4461782,
+  "integrated_entry_domain_status": "OUTSIDE_PUBLISHED_DOMAIN_STATE_NOT_CHANGED",
+  "integrated_entry_domain_error": "AoA query outside the user profile domain."
+}

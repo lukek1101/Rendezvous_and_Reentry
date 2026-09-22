@@ -1,0 +1,30 @@
+{
+  "review_date": "2026-09-21",
+  "access": "Full PDFs obtained; cited pages extracted and visually inspected. Other pages are not claimed to be exhaustively reviewed.",
+  "sources": [
+    {
+      "title": "MSC 69-FM-89: Apollo 7 Entry Postflight Analysis",
+      "url": "https://apollojournals.org/afj/ap07fj/pdf/a07-entry-postflight-analysis-19740072689.pdf",
+      "local_path": "tmp/guidance_review/apollo7_entry.pdf",
+      "sha256": "e92a45da6764a88c5ccf1cbae39da190ee306aa0cfb685b6a9e31e79dbb67784",
+      "locators": "Printed 7-8, 19, 21 / PDF 14-15, 26, 28",
+      "use": "Preflight trim Table IIb; separation weight; inertial BET metadata. Postflight Table IIa retained only as source comparison."
+    },
+    {
+      "title": "CSM/LM Spacecraft Operational Data Book, Volume I Part 1, Revision 2, SNA-8-D-027(I)",
+      "url": "https://www.ibiblio.org/apollo/Documents/HSI-208962.pdf",
+      "local_path": "tmp/guidance_review/csm_rev2.pdf",
+      "sha256": "ff60a904750801b5507c9b1e371cc8d7f402d81f86d2a75c1967ebde8c949dcd",
+      "locators": "Printed 6-1 and 6-5 / PDF 646 and 650; contents PDF 19",
+      "use": "Table 6-1 reference length 154.0 in and area 129.4 ft^2. Later coefficient database not imported."
+    },
+    {
+      "title": "Apollo Seals: A Basis for the Crew Exploration Vehicle Seals",
+      "url": "https://ntrs.nasa.gov/api/citations/20070025192/downloads/20070025192.pdf?attachment=true",
+      "local_path": "tmp/guidance_review/apollo_seals.pdf",
+      "sha256": "700eadf7214c1da7e8d7c0d8e8f42d2e8668f6ad4944e784e2dd2369b13a81fb",
+      "locators": "Printed/PDF 3, Apollo Block II geometry",
+      "use": "469.4 cm spherical heat-shield radius used in existing heating surrogate; no Apollo TPS validation."
+    }
+  ]
+}

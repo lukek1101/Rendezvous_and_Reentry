@@ -1,0 +1,97 @@
+{
+  "date": "2026-09-21",
+  "git_head": "08e0e07cd0b6df4a4a1254350c4bd2f37ba973e9",
+  "scope": "Reference research only; no simulations or optimization",
+  "sources": [
+    {
+      "id": "H1",
+      "local_review_copy": "C:\\Users\\user\\.codex\\research\\reference_vehicles_2026-09-21\\horus_m692.pdf",
+      "sha256": "91ab69e794624f5e99bc1ee1486d6599e4483220993052d22cd513dd2f1ce9de",
+      "pages": 62,
+      "access": "public full text",
+      "url_ledger": "REFERENCE_VEHICLE_RESEARCH_2026-09-21.md"
+    },
+    {
+      "id": "H2",
+      "local_review_copy": "C:\\Users\\user\\.codex\\research\\reference_vehicles_2026-09-21\\horus_2016.pdf",
+      "sha256": "fc3bf5de9f6c67d884979303517d36e306b106f47a898d5bab2f112b0b208517",
+      "pages": 32,
+      "access": "public full text",
+      "url_ledger": "REFERENCE_VEHICLE_RESEARCH_2026-09-21.md"
+    },
+    {
+      "id": "H3",
+      "local_review_copy": "C:\\Users\\user\\.codex\\research\\reference_vehicles_2026-09-21\\horus_2017.pdf",
+      "sha256": "4eeb49a8e2357b9c1d29924df39dcf150baf49306cd21b8bef4aa0bc0089819d",
+      "pages": 25,
+      "access": "public full text",
+      "url_ledger": "REFERENCE_VEHICLE_RESEARCH_2026-09-21.md"
+    },
+    {
+      "id": "A1",
+      "local_review_copy": "C:\\Users\\user\\.codex\\research\\reference_vehicles_2026-09-21\\ard_brochure.pdf",
+      "sha256": "8a62c28aea5b735f3606c957e1aaae87905c66c5ab910b66eb03f1dda3598e03",
+      "pages": 21,
+      "access": "public full text",
+      "url_ledger": "REFERENCE_VEHICLE_RESEARCH_2026-09-21.md"
+    },
+    {
+      "id": "A2",
+      "local_review_copy": "C:\\Users\\user\\.codex\\research\\reference_vehicles_2026-09-21\\ard_postflight.pdf",
+      "sha256": "2c1a5ae388aa29268637c6fe56079f22a9c4a833a1b1c476f242aa48461c26e6",
+      "pages": 9,
+      "access": "public full text",
+      "url_ledger": "REFERENCE_VEHICLE_RESEARCH_2026-09-21.md"
+    },
+    {
+      "id": "A3",
+      "local_review_copy": "C:\\Users\\user\\Desktop\\IAAT\\자료\\Reentry\\ESA ARD 관련\\EN-AVT-130-10.pdf",
+      "sha256": "85949dc9701ef2901d7ae3189ea7dd3be9fd31a683cfc78d1ea877796aa41c54",
+      "pages": 46,
+      "access": "user supplied full text",
+      "url_ledger": "REFERENCE_VEHICLE_RESEARCH_2026-09-21.md"
+    },
+    {
+      "id": "A4",
+      "local_review_copy": "C:\\Users\\user\\Downloads\\johnston-et-al-2012-aerothermodynamics-of-the-ard-postflight-numerics-and-shock-tunnel-experiments.pdf",
+      "sha256": "1e7443872e8027f27bceaeba3a6c94ee9e31a2fd51c4d7dde5de55ec862c35df",
+      "pages": 11,
+      "access": "user supplied full text",
+      "url_ledger": "REFERENCE_VEHICLE_RESEARCH_2026-09-21.md"
+    },
+    {
+      "id": "C1",
+      "local_review_copy": "C:\\Users\\user\\.codex\\research\\reference_vehicles_2026-09-21\\apollo_as202.pdf",
+      "sha256": "2c217122a93e437110eaf3286b5e2977c4778cb8a9acdf72c8f57f987511841a",
+      "pages": 62,
+      "access": "public full text",
+      "url_ledger": "REFERENCE_VEHICLE_RESEARCH_2026-09-21.md"
+    },
+    {
+      "id": "O1",
+      "local_review_copy": "C:\\Users\\user\\.codex\\research\\reference_vehicles_2026-09-21\\cw_reference.pdf",
+      "sha256": "8a18c5242f842118aa61468ad8b1f3f49e65b9308ff35928329a2fed23ee5333",
+      "pages": 44,
+      "access": "public full text",
+      "url_ledger": "REFERENCE_VEHICLE_RESEARCH_2026-09-21.md"
+    },
+    {
+      "id": "O2",
+      "local_review_copy": "C:\\Users\\user\\.codex\\research\\reference_vehicles_2026-09-21\\htv2.pdf",
+      "sha256": "07c79d1e30c3458dc57e32f2d5bd378879732bda56e5ba355ee01f9250d45496",
+      "pages": 86,
+      "access": "public full text",
+      "url_ledger": "REFERENCE_VEHICLE_RESEARCH_2026-09-21.md"
+    }
+  ],
+  "derived_checks": {
+    "ARD_area_m2": 6.157521601035993,
+    "ARD_nose_radius_m": 3.36,
+    "ARD_shoulder_radius_m": 0.13999999999999999,
+    "AS202_diameter_m": 3.9114984,
+    "AS202_interface_m": 121920.0
+  },
+  "unavailable": {
+    "ARD_R1_R5": "Requested; user unable to locate. Simplified models accepted for consideration only."
+  }
+}

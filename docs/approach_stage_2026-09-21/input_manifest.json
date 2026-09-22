@@ -1,0 +1,42 @@
+[
+  {
+    "path": "Mission_Run_Config.m",
+    "sha256": "189de2d4e48c2f188767c5e77d3f303429ddb873d51f2dc0a094acb1a9b96a34"
+  },
+  {
+    "path": "+mission/approach_axis.m",
+    "sha256": "b41ac68f0afde209856f8f3ea97c77a931b25fb3e1b5a91cc437c93df83c4a5b"
+  },
+  {
+    "path": "+mission/proximity_defaults.m",
+    "sha256": "796f992cc1585e910c3ae4a44304ba32566a575861f5fac29367c04832f3da97"
+  },
+  {
+    "path": "+mission/plan_closing.m",
+    "sha256": "ad936348def344e2be2402736f9d2ab47a622be0215ea29cd06feca17b95a7c8"
+  },
+  {
+    "path": "+mission/track_rbar.m",
+    "sha256": "e219a983db75c837830b7b26ad1a561f52b265e65c7b2bfa72fb24e6cf1f8e35"
+  },
+  {
+    "path": "+mission/autonomous_proximity.m",
+    "sha256": "4ee7a35d596e6b36ae86caae28794dd4a86265eb7b7b61ddc3bc36b429771cf7"
+  },
+  {
+    "path": "+mission/validate_configuration.m",
+    "sha256": "79bbecd4964d53aca3de98f254faaf6259515a0c6e9faf0bf68ec2e84b9ab5a4"
+  },
+  {
+    "path": "+orbit_core/relative_state.m",
+    "sha256": "66fdb70c7792e286703ebd49050f4338ab64786ff01ca8bf2e996313a619c1be"
+  },
+  {
+    "path": "docs/nominal_stage_2026-09-21/nominal_api.mat",
+    "sha256": "52c433b12448553b7dcd0b22b072b8418c18753b4f0a1a218b85094641f99276"
+  },
+  {
+    "path": "validation/Validate_Approach_Modes.m",
+    "sha256": "dd639e4b31089f52954e31ae1547d426172872cf5d68cf84c2bee869e3a5dbf0"
+  }
+]
